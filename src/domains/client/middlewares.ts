@@ -82,8 +82,8 @@ const validateCreateOnePayload = (req: Request, _res: Response, next: NextFuncti
         invalid_type_error: 'O campo Telefone do Responsável ("managerPhoneNumber") deve ser uma string.',
         required_error: 'O campo Telefone do Responsável ("managerPhoneNumber") é obrigatório.'
       })
-      .length(10, {
-        message: 'O campo Telefone do Responsável ("managerPhoneNumber") deve ter 10 caracteres.'
+      .min(10, {
+        message: 'O campo Telefone do Responsável ("managerPhoneNumber") deve ter pelo menos 10 caracteres.'
       }),
 
     managerEmail: z
@@ -100,8 +100,8 @@ const validateCreateOnePayload = (req: Request, _res: Response, next: NextFuncti
         invalid_type_error: 'O campo Telefone do Financeiro ("financePhoneNumber") deve ser uma string.',
         required_error: 'O campo Telefone do Financeiro ("financePhoneNumber") é obrigatório.'
       })
-      .length(10, {
-        message: 'O campo Telefone do Financeiro ("financePhoneNumber") deve ter 10 caracteres.'
+      .min(10, {
+        message: 'O campo Telefone do Financeiro ("financePhoneNumber") deve ter pelo menos 10 caracteres.'
       }),
 
     lumpSum: z
@@ -326,8 +326,8 @@ const validateUpdateOnePayload = (req: Request, _res: Response, next: NextFuncti
         invalid_type_error: 'O campo Telefone do Responsável ("managerPhoneNumber") deve ser uma string.',
         required_error: 'O campo Telefone do Responsável ("managerPhoneNumber") é obrigatório.'
       })
-      .length(10, {
-        message: 'O campo Telefone do Responsável ("managerPhoneNumber") deve ter 10 caracteres.'
+      .min(10, {
+        message: 'O campo Telefone do Responsável ("managerPhoneNumber") deve ter pelo menos 10 caracteres.'
       })
       .optional(),
 
@@ -346,8 +346,8 @@ const validateUpdateOnePayload = (req: Request, _res: Response, next: NextFuncti
         invalid_type_error: 'O campo Telefone do Financeiro ("financePhoneNumber") deve ser uma string.',
         required_error: 'O campo Telefone do Financeiro ("financePhoneNumber") é obrigatório.'
       })
-      .length(10, {
-        message: 'O campo Telefone do Financeiro ("financePhoneNumber") deve ter 10 caracteres.'
+      .min(10, {
+        message: 'O campo Telefone do Financeiro ("financePhoneNumber") deve ter pelo menos 10 caracteres.'
       })
       .optional(),
 

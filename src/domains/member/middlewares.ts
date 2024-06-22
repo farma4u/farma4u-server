@@ -61,8 +61,8 @@ const validateCreateOnePayload = (req: Request, _res: Response, next: NextFuncti
         invalid_type_error: 'O campo Telefone ("phoneNumber") deve ser uma string.',
         required_error: 'O campo Telefone ("phoneNumber") é obrigatório.'
       })
-      .length(10, {
-        message: 'O campo Telefone ("phoneNumber") deve ter 10 caracteres.'
+      .min(10, {
+        message: 'O campo Telefone ("phoneNumber") deve ter pelo menos 10 caracteres.'
       }),
 
     statusId: z
@@ -264,8 +264,8 @@ const validateUpdateOnePayload = (req: Request, _res: Response, next: NextFuncti
         invalid_type_error: 'O campo Telefone ("phoneNumber") deve ser uma string.',
         required_error: 'O campo Telefone ("phoneNumber") é obrigatório.'
       })
-      .length(10, {
-        message: 'O campo Telefone ("phoneNumber") deve ter 10 caracteres.'
+      .min(10, {
+        message: 'O campo Telefone ("phoneNumber") deve ter pelo menos 10 caracteres.'
       })
       .optional()
   })
