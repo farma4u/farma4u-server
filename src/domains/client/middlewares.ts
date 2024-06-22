@@ -193,8 +193,8 @@ const validateFindManyQueryParams = (req: Request, _res: Response, next: NextFun
       .gte(1, {
         message: 'O campo Quantidade de Registros ("take") deve ser maior que 0.'
       })
-      .lte(50, {
-        message: 'O campo Quantidade de Registros ("take") deve ser menor ou igual a 50.'
+      .lte(1000, {
+        message: 'O campo Quantidade de Registros ("take") deve ser menor ou igual a 1000.'
       }),
 
     fantasyName: z
