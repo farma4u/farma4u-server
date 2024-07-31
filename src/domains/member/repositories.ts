@@ -3,7 +3,7 @@ import prismaClient from '../../database/connection'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 
 import { BadRequestError, DatabaseError, NotFoundError } from '../../errors'
-import { MemberToBeReturnedOnFindMany, FindManyMembersWhere, MemberToBeCreated } from './interfaces'
+import { type MemberToBeReturnedOnFindMany, type FindManyMembersWhere, type MemberToBeCreated } from './interfaces'
 import { prismaErrors } from '../../enums/prismaErrors'
 import { status } from '../../enums/statusEnum'
 
@@ -104,7 +104,7 @@ const findOneById = async (id: string, data?: Partial<Member>): Promise<Member &
   try {
     const where = { id }
 
-    if (data) Object.assign(where, data)
+    if (data !== undefined) Object.assign(where, data)
 
     const member = await prismaClient.member.findUnique({
       where,
@@ -121,7 +121,7 @@ const findOneById = async (id: string, data?: Partial<Member>): Promise<Member &
           },
           orderBy: { createdAt: 'desc' }
         }
-      },
+      }
     })
 
     return member
@@ -143,7 +143,7 @@ const updateMany = async (
     if (
       (error instanceof PrismaClientKnownRequestError) &&
       (error.code === prismaErrors.NOT_FOUND)
-    ) throw new NotFoundError(`${MEMBER_NOT_FOUND}${data.id ? ' (id: ' + data.id + ')' : ''}`)
+    ) throw new NotFoundError(`${MEMBER_NOT_FOUND}${data.id !== null ? ' (id: ' + data.id + ')' : ''}`)
 
     throw new DatabaseError(error)
   }
@@ -234,7 +234,6 @@ const deleteOneFirstAccessCode = async (memberId: string): Promise<void> => {
 
     throw new DatabaseError(error)
   }
-
 }
 
 export default {

@@ -80,6 +80,7 @@ model Member {
   createdPassword Boolean  @default(false) @map("criou_senha")
   totalSavings    Float    @default(0) @map("economia_total")
   statusId        Int      @map("id_status")
+  isHinova        Boolean  @default(false) @map("hinova")
   createdAt       DateTime @default(now()) @map("data_de_criacao")
   updatedAt       DateTime @default(now()) @updatedAt @map("data_de_atualizacao")
 

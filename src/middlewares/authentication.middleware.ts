@@ -14,6 +14,7 @@ export const verifyAccessToken = async (req: Request, _res: Response, next: Next
 
   const accessToken = req.headers.authorization?.split('Bearer ')[1]
 
+  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
   if (!accessToken) throw new UnauthorizedError(INVALID_ACCESS_TOKEN)
 
   const secretKey = createSecretKey(JWT_SECRET, 'utf8')

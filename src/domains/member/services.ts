@@ -5,12 +5,12 @@ import { BadRequestError, NotFoundError } from '../../errors'
 import clientRepositories from '../client/repositories'
 import { convertBufferToStream } from '../../utils/convertBufferToStream'
 import {
-  MemberToBeReturnedOnFindMany,
+  type MemberToBeReturnedOnFindMany,
   type FindManyMembersQueryParams,
   type FindManyMembersWhere,
   type MemberToBeCreated,
   type MemberToBeReturned,
-  MemberToBeUpdated
+  type MemberToBeUpdated
 } from './interfaces'
 import { type FindManyResponse } from '../../interfaces'
 import memberRepositories from './repositories'
@@ -40,6 +40,7 @@ const createMany = async (clientId: string, fileBuffer: Buffer): Promise<void> =
 
   fileStream
     .pipe(csv())
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     .on('data', async (row) => {
       const memberToBeCreated: MemberToBeCreated = {
         birthDate: row.data_de_nascimento,

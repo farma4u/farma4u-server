@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
+/* eslint-disable import/first */
 import cors from 'cors'
 import dotenv from 'dotenv'
 import express, { type Request, type Response } from 'express'

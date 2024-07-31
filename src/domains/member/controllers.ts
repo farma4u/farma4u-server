@@ -1,7 +1,7 @@
 import { HttpStatusCode } from 'axios'
 import { type Request, type Response } from 'express'
 
-import { MemberToBeUpdated, type FindManyMembersQueryParams, type MemberToBeCreated } from './interfaces'
+import { type MemberToBeUpdated, type FindManyMembersQueryParams, type MemberToBeCreated } from './interfaces'
 import memberService from './services'
 import { BadRequestError } from '../../errors'
 
@@ -47,7 +47,7 @@ const findMany = async (req: Request, res: Response): Promise<Response> => {
     clientCnpj: req.query['client-cnpj'] as string | undefined,
     cpf: req.query.cpf as string | undefined,
     name: req.query.name as string | undefined,
-    statusId: req.query['status-id'] ? parseInt(req.query['status-id'] as string) : undefined
+    statusId: req.query['status-id'] !== undefined ? parseInt(req.query['status-id'] as string) : undefined
   }
 
   const { items: members, totalCount } = await memberService.findMany(queryParams)
