@@ -108,7 +108,9 @@ const updateOne = async (req: Request, res: Response): Promise<Response> => {
     financePhoneNumber: req.body.financePhoneNumber,
     lumpSum: req.body.lumpSum,
     unitValue: req.body.unitValue,
-    contractUrl: req.body.contractUrl
+    contractUrl: req.body.contractUrl,
+    isHinova: req.body.isHinova,
+    hinovaToken: req.body.hinovaToken
   }
 
   await clientService.updateOne(clientId, clientToBeUpdated)
