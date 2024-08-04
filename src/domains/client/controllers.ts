@@ -22,6 +22,8 @@ const createOne = async (req: Request, res: Response): Promise<Response> => {
     lumpSum: req.body.lumpSum,
     unitValue: req.body.unitValue,
     contractUrl: req.body.contractUrl,
+    isHinova: req.body.isHinova,
+    hinovaToken: req.body.hinovaToken,
     statusId: req.body.statusId
   }
 

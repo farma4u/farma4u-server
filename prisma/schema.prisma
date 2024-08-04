@@ -54,6 +54,8 @@ model Client {
   unitValue          Float?   @map("valor_unitario")
   totalSavings       Float    @default(0) @map("economia_total")
   contractUrl        String?  @map("url_do_contrato")
+  isHinova           Boolean  @default(false) @map("hinova")
+  hinovaToken        String?  @map("token_hinova")
   statusId           Int      @map("id_status")
   createdAt          DateTime @default(now()) @map("data_de_criacao")
   updatedAt          DateTime @default(now()) @updatedAt @map("data_de_atualizacao")
@@ -72,8 +74,8 @@ model Member {
   clientId        String   @map("id_cliente")
   cpf             String   @unique
   name            String   @map("nome")
-  phoneNumber     String   @map("telefone")
-  email           String
+  phoneNumber     String?  @map("telefone")
+  email           String?
   birthDate       String   @map("data_de_nascimento")
   cep             String
   password        String?  @map("senha")

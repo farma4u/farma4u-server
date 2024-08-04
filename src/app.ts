@@ -19,6 +19,7 @@ import { clientRouter } from './domains/client/routes'
 import { memberRouter } from './domains/member/routes'
 import { orderRouter } from './domains/order/routes'
 import { userRouter } from './domains/user/routes'
+import { processHinovaMembersListService } from './domains/hinova/services'
 
 const app = express()
 
@@ -33,6 +34,11 @@ app.use('/api/client', clientRouter)
 app.use('/api/member', memberRouter)
 app.use('/api/order', orderRouter)
 app.use('/api/user', userRouter)
+
+app.get('/api/test', async (_req: Request, res: Response) => {
+  await processHinovaMembersListService()
+  res.status(HttpStatusCode.Ok).end()
+})
 
 app.get('/api/health-check', (_req: Request, res: Response) => {
   res.status(HttpStatusCode.Ok).json(API_RUNNING)

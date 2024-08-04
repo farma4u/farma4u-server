@@ -78,6 +78,8 @@ const findMany = async (
         unitValue: true,
         totalSavings: true,
         contractUrl: true,
+        isHinova: true,
+        hinovaToken: true,
         statusId: true,
         createdAt: true
       },

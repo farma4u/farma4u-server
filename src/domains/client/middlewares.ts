@@ -134,6 +134,19 @@ const validateCreateOnePayload = (req: Request, _res: Response, next: NextFuncti
       })
       .optional(),
 
+    isHinova: z
+      .boolean({
+        invalid_type_error: 'O campo Tem Integração com a Hinova ("isHinova") deve ser uma string.',
+        required_error: 'O campo Tem Integração com a Hinova ("isHinova") é obrigatório.'
+      }),
+
+    hinovaToken: z
+      .string({
+        invalid_type_error: 'O campo Token da Hinova ("hinovaToken") deve ser uma string.',
+        required_error: 'O campo Token da Hinova ("hinovaToken") é obrigatório.'
+      })
+      .optional(),
+
     statusId: z
       .number({
         invalid_type_error: 'O campo Status ("statusId") deve ser um number.',
