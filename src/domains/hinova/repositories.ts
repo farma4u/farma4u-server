@@ -60,7 +60,8 @@ export async function findAllHinovaClientsRepository (): Promise<Client[]> {
       where: {
         AND: [
           { statusId: status.ACTIVE },
-          { isHinova: true }
+          { isHinova: true },
+          { hinovaToken: { not: null } }
         ]
       }
     })

@@ -176,6 +176,8 @@ const validateCreateOnePayload = (req: Request, _res: Response, next: NextFuncti
       lumpSum: req.body.lumpSum,
       unitValue: req.body.unitValue,
       contractUrl: req.body.contractUrl,
+      isHinova: req.body.isHinova,
+      hinovaToken: req.body.hinovaToken,
       statusId: req.body.statusId
     })
   } catch (error) {

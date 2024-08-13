@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import axios, { AxiosError } from 'axios'
 import cron from 'node-cron'
 import { getEnvironmentVariable } from '../../utils/getEnvironmentVariable'
@@ -15,6 +16,7 @@ async function getAllHinovaMembersService (clientHinovaToken: string): Promise<I
   let currentPage = 1
 
   try {
+    // Requisição para recuperar quantidade total de páginas de beneficiários no SGA da Hinova
     const response = await axios.get<IHinovaMemberListData>(HINOVA_LIST_MEMBERS_PAGINATION_DATA_URL, {
       baseURL: HINOVA_BASE_URL,
       headers: { Authorization: `Bearer ${clientHinovaToken}` }
@@ -33,6 +35,7 @@ async function getAllHinovaMembersService (clientHinovaToken: string): Promise<I
     try {
       isFirstIteration = false
 
+      // Requisição para recuperar beneficiários no SGA da Hinova
       const response = await axios.get<IHinovaMember[]>(`${HINOVA_LIST_MEMBERS_URL}/${currentPage}`, {
         baseURL: HINOVA_BASE_URL,
         headers: { Authorization: `Bearer ${clientHinovaToken}` }
@@ -66,13 +69,15 @@ export async function processHinovaMembersListService (): Promise<void> {
 
     // Recupera lista de clientes ativos e integrados à Hinova
     const hinovaClients = await findAllHinovaClientsRepository()
+    // Remove clientes cadastrados sem o token da hinova
+    const hinovaClientsWithToken = hinovaClients.filter(({ hinovaToken }) => hinovaToken !== null && hinovaToken !== '')
 
     // Itera sob a lista de clientes integrados à Hinova para recuperar seus associados
-    for (const hinovaClient of hinovaClients) {
+    for (const hinovaClient of hinovaClientsWithToken) {
       // Bloco para evitar que erros interrompam o loop
       try {
         // Recupera a lista de associados ativos da Hinova desse cliente
-        const hinovaMembers = await getAllHinovaMembersService(hinovaClient.id)
+        const hinovaMembers = await getAllHinovaMembersService(hinovaClient.hinovaToken!)
 
         logger.debug(hinovaMembers, 'ASSOCIADOS DA HINOVA')
 
@@ -90,7 +95,7 @@ export async function processHinovaMembersListService (): Promise<void> {
 }
 
 // Rotina para atualizar associados da Hinova todos os dias, às 01:15
-export const hinovaMembersUpdateScheduleService = cron.schedule('46 19 * * *', async () => {
+export const hinovaMembersUpdateScheduleService = cron.schedule('15 01 * * *', async () => {
   logger.info('Rotina de atualização dos associados da Hinova iniciada.')
   await processHinovaMembersListService()
   logger.info('Rotina de atualização dos associados da Hinova finalizada.')

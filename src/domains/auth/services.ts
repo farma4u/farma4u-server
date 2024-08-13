@@ -2,7 +2,7 @@ import * as bcrypt from 'bcrypt'
 import { createSecretKey, randomBytes } from 'node:crypto'
 import { SignJWT } from 'jose'
 
-import { BadRequestError, UnauthorizedError } from '../../errors'
+import { BadRequestError, InternalServerError, UnauthorizedError } from '../../errors'
 import { getEnvironmentVariable } from '../../utils/getEnvironmentVariable'
 import { type ILoginResponse } from './interfaces'
 import memberRepositories from '../member/repositories'
@@ -116,6 +116,8 @@ const createMemberFirstAccess = async (cpf: string): Promise<void> => {
   if (member.createdPassword) throw new UnauthorizedError(USER_ALREADY_HAS_PASSWORD)
 
   const firstAccessCode = await generateFirstAccessCode(member.id)
+
+  if (member.email === null) throw new InternalServerError('O associado não possui email cadastrado.')
 
   await sendFirstAccessCode(member.email, firstAccessCode, member.name)
 
