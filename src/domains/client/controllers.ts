@@ -1,7 +1,7 @@
 import { HttpStatusCode } from 'axios'
 import { type Request, type Response } from 'express'
 
-import { type FindManyClientsQueryParams, type ClientToBeCreated, ClientToBeUpdated } from './interfaces'
+import { type FindManyClientsQueryParams, type ClientToBeCreated, type ClientToBeUpdated } from './interfaces'
 import clientService from './service'
 
 const createOne = async (req: Request, res: Response): Promise<Response> => {
@@ -22,6 +22,8 @@ const createOne = async (req: Request, res: Response): Promise<Response> => {
     lumpSum: req.body.lumpSum,
     unitValue: req.body.unitValue,
     contractUrl: req.body.contractUrl,
+    isHinova: req.body.isHinova,
+    hinovaToken: req.body.hinovaToken,
     statusId: req.body.statusId
   }
 
@@ -38,7 +40,7 @@ const findMany = async (req: Request, res: Response): Promise<Response> => {
     skip: parseInt(req.query.skip as string),
     cnpj: req.query.cnpj as string | undefined,
     fantasyName: req.query['fantasy-name'] as string | undefined,
-    statusId: req.query['status-id'] ? parseInt(req.query['status-id'] as string) : undefined
+    statusId: req.query['status-id'] !== undefined ? parseInt(req.query['status-id'] as string) : undefined
   }
 
   const { items: clients, totalCount, systemTotalSavings } = await clientService.findMany(queryParams)
@@ -106,7 +108,9 @@ const updateOne = async (req: Request, res: Response): Promise<Response> => {
     financePhoneNumber: req.body.financePhoneNumber,
     lumpSum: req.body.lumpSum,
     unitValue: req.body.unitValue,
-    contractUrl: req.body.contractUrl
+    contractUrl: req.body.contractUrl,
+    isHinova: req.body.isHinova,
+    hinovaToken: req.body.hinovaToken
   }
 
   await clientService.updateOne(clientId, clientToBeUpdated)

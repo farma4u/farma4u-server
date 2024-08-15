@@ -1,5 +1,11 @@
 import clientRepositories from './repositories'
-import { ClientToBeUpdated, type ClientToBeCreated, type ClientToBeReturned, type FindManyClientsQueryParams, type FindManyClientsWhere } from './interfaces'
+import {
+  type ClientToBeUpdated,
+  type ClientToBeCreated,
+  type ClientToBeReturned,
+  type FindManyClientsQueryParams,
+  type FindManyClientsWhere
+} from './interfaces'
 import memberRepositories from '../member/repositories'
 import { NotFoundError } from '../../errors'
 import { type FindManyResponse } from '../../interfaces'

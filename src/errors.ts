@@ -64,6 +64,6 @@ export class NotFoundError extends BaseAPIError {
 
 export class InternalServerError extends BaseAPIError {
   constructor (message?: string) {
-    super(message || INTERNAL_SERVER_ERROR, HttpStatusCode.InternalServerError)
+    super(message ?? INTERNAL_SERVER_ERROR, HttpStatusCode.InternalServerError)
   }
 }

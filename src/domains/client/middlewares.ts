@@ -134,6 +134,19 @@ const validateCreateOnePayload = (req: Request, _res: Response, next: NextFuncti
       })
       .optional(),
 
+    isHinova: z
+      .boolean({
+        invalid_type_error: 'O campo Tem Integração com a Hinova ("isHinova") deve ser uma string.',
+        required_error: 'O campo Tem Integração com a Hinova ("isHinova") é obrigatório.'
+      }),
+
+    hinovaToken: z
+      .string({
+        invalid_type_error: 'O campo Token da Hinova ("hinovaToken") deve ser uma string.',
+        required_error: 'O campo Token da Hinova ("hinovaToken") é obrigatório.'
+      })
+      .optional(),
+
     statusId: z
       .number({
         invalid_type_error: 'O campo Status ("statusId") deve ser um number.',
@@ -163,6 +176,8 @@ const validateCreateOnePayload = (req: Request, _res: Response, next: NextFuncti
       lumpSum: req.body.lumpSum,
       unitValue: req.body.unitValue,
       contractUrl: req.body.contractUrl,
+      isHinova: req.body.isHinova,
+      hinovaToken: req.body.hinovaToken,
       statusId: req.body.statusId
     })
   } catch (error) {
@@ -379,6 +394,20 @@ const validateUpdateOnePayload = (req: Request, _res: Response, next: NextFuncti
       .url({
         message: 'O campo URL do Contrato ("contractUrl") deve ser uma URL válida.'
       })
+      .optional(),
+
+    isHinova: z
+      .boolean({
+        invalid_type_error: 'O campo Tem Integração com a Hinova ("isHinova") deve ser uma string.',
+        required_error: 'O campo Tem Integração com a Hinova ("isHinova") é obrigatório.'
+      })
+      .optional(),
+
+    hinovaToken: z
+      .string({
+        invalid_type_error: 'O campo Token da Hinova ("hinovaToken") deve ser uma string.',
+        required_error: 'O campo Token da Hinova ("hinovaToken") é obrigatório.'
+      })
       .optional()
   })
 
@@ -396,7 +425,9 @@ const validateUpdateOnePayload = (req: Request, _res: Response, next: NextFuncti
       financePhoneNumber: req.body.financePhoneNumber,
       lumpSum: req.body.lumpSum,
       unitValue: req.body.unitValue,
-      contractUrl: req.body.contractUrl
+      contractUrl: req.body.contractUrl,
+      isHinova: req.body.isHinova,
+      hinovaToken: req.body.hinovaToken
     })
   } catch (error) {
     if (error instanceof z.ZodError) {

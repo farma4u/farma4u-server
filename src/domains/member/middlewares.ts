@@ -97,7 +97,7 @@ const validateCreateOnePayload = (req: Request, _res: Response, next: NextFuncti
     throw new GenericError(error)
   }
 
-  const birthDateSplitted = req.body.birthDate.split('-')
+  const birthDateSplitted: string[] = req.body.birthDate.split('-')
 
   if (
     (birthDateSplitted.length !== 3) ||
@@ -286,8 +286,8 @@ const validateUpdateOnePayload = (req: Request, _res: Response, next: NextFuncti
     throw new GenericError(error)
   }
 
-  if (req.body.birthDate) {
-    const birthDateSplitted = req.body.birthDate.split('-')
+  if (req.body.birthDate !== undefined) {
+    const birthDateSplitted: string[] = req.body.birthDate.split('-')
 
     if (
       (birthDateSplitted.length !== 3) ||

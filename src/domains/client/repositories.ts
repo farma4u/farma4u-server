@@ -78,6 +78,8 @@ const findMany = async (
         unitValue: true,
         totalSavings: true,
         contractUrl: true,
+        isHinova: true,
+        hinovaToken: true,
         statusId: true,
         createdAt: true
       },
@@ -106,7 +108,7 @@ const findOneById = async (id: string, data?: Partial<Client>): Promise<Client |
   try {
     const where = { id }
 
-    if (data) Object.assign(where, data)
+    if (data !== undefined) Object.assign(where, data)
 
     const client = await prismaClient.client.findUnique({
       where
