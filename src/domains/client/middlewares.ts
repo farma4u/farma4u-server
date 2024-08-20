@@ -36,9 +36,6 @@ const validateCreateOnePayload = (req: Request, _res: Response, next: NextFuncti
       .string({
         invalid_type_error: 'O campo Segmento ("segment") deve ser uma string.',
         required_error: 'O campo Segmento ("segment") é obrigatório.'
-      })
-      .min(3, {
-        message: 'O campo Segmento ("segment") deve ter pelo menos 3 caracteres.'
       }),
 
     address: z
@@ -290,9 +287,6 @@ const validateUpdateOnePayload = (req: Request, _res: Response, next: NextFuncti
       .string({
         invalid_type_error: 'O campo Segmento ("segment") deve ser uma string.',
         required_error: 'O campo Segmento ("segment") é obrigatório.'
-      })
-      .min(3, {
-        message: 'O campo Segmento ("segment") deve ter pelo menos 3 caracteres.'
       })
       .optional(),
 
