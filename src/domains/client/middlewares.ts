@@ -87,10 +87,10 @@ const validateCreateOnePayload = (req: Request, _res: Response, next: NextFuncti
       .string({
         invalid_type_error: 'O campo E-mail do Responsável ("managerEmail") deve ser uma string.',
         required_error: 'O campo E-mail do Responsável ("managerEmail") é obrigatório.'
-      })
-      .email({
-        message: 'O campo E-mail do Responsável ("managerEmail") deve ser um e-mail válido.'
       }),
+    // .email({
+    //   message: 'O campo E-mail do Responsável ("managerEmail") deve ser um e-mail válido.'
+    // }),
 
     financePhoneNumber: z
       .string({
@@ -345,9 +345,9 @@ const validateUpdateOnePayload = (req: Request, _res: Response, next: NextFuncti
         invalid_type_error: 'O campo E-mail do Responsável ("managerEmail") deve ser uma string.',
         required_error: 'O campo E-mail do Responsável ("managerEmail") é obrigatório.'
       })
-      .email({
-        message: 'O campo E-mail do Responsável ("managerEmail") deve ser um e-mail válido.'
-      })
+      // .email({
+      //   message: 'O campo E-mail do Responsável ("managerEmail") deve ser um e-mail válido.'
+      // })
       .optional(),
 
     financePhoneNumber: z
