@@ -15,6 +15,10 @@ async function getAllHinovaMembersService (clientHinovaToken: string): Promise<I
   let membersPagesTotalCount: number
   let currentPage = 1
 
+  console.log('------------ início da recuperação na hinova')
+  console.log('------------ token da hinova do cliente')
+  console.log(clientHinovaToken)
+
   try {
     // Requisição para recuperar quantidade total de páginas de beneficiários no SGA da Hinova
     const response = await axios.get<IHinovaMemberListData>(HINOVA_LIST_MEMBERS_PAGINATION_DATA_URL, {
@@ -22,8 +26,12 @@ async function getAllHinovaMembersService (clientHinovaToken: string): Promise<I
       headers: { Authorization: `Bearer ${clientHinovaToken}` }
     })
 
+    console.log('------------ resposta da primeira requisição')
+    console.log(response)
+
     membersPagesTotalCount = response.data.quantidade_paginas
   } catch (error) {
+    console.error(error)
     logger.error(
       { error, errorResponseData: error instanceof AxiosError ? error?.response?.data : null },
       'Falha ao recuperar dados de paginação da lista de associados da Hinova.'
@@ -32,6 +40,8 @@ async function getAllHinovaMembersService (clientHinovaToken: string): Promise<I
   }
 
   while (isFirstIteration || (currentPage <= membersPagesTotalCount)) {
+    console.log('------------ entrou no while')
+
     try {
       isFirstIteration = false
 
@@ -41,9 +51,13 @@ async function getAllHinovaMembersService (clientHinovaToken: string): Promise<I
         headers: { Authorization: `Bearer ${clientHinovaToken}` }
       })
 
+      console.log('------------ resposta da segunda requisição')
+      console.log(response)
+
       members.push(...response.data)
       currentPage += 1
     } catch (error) {
+      console.error(error)
       logger.error(
         { error, errorResponseData: error instanceof AxiosError ? error?.response?.data : null },
         'Falha ao recuperar lista de associados da Hinova.'
@@ -67,13 +81,24 @@ export async function processHinovaMembersListService (): Promise<void> {
     // Inativa todos os associados ativos da Hinova
     await inactivateAllHinovaMembersRepository()
 
+    console.log('------------ associados da hinova inativados')
+
     // Recupera lista de clientes ativos e integrados à Hinova
     const hinovaClients = await findAllHinovaClientsRepository()
+
+    console.log('------------ lista de clientes da hinova')
+    console.log(hinovaClients)
+
     // Remove clientes cadastrados sem o token da hinova
-    const hinovaClientsWithToken = hinovaClients.filter(({ hinovaToken }) => hinovaToken !== null && hinovaToken !== '')
+    const hinovaClientsWithToken = hinovaClients.filter(({ hinovaToken }) => typeof hinovaToken === 'string' && hinovaToken !== '')
+
+    console.log('------------ lista de clientes da hinova após filtro')
+    console.log(hinovaClients)
 
     // Itera sob a lista de clientes integrados à Hinova para recuperar seus associados
     for (const hinovaClient of hinovaClientsWithToken) {
+      console.log('------------ entrou no loop de clientes')
+
       // Bloco para evitar que erros interrompam o loop
       try {
         // Recupera a lista de associados ativos da Hinova desse cliente
@@ -95,7 +120,7 @@ export async function processHinovaMembersListService (): Promise<void> {
 }
 
 // Rotina para atualizar associados da Hinova todos os dias, às 01:15
-export const hinovaMembersUpdateScheduleService = cron.schedule('15 01 * * *', async () => {
+export const hinovaMembersUpdateScheduleService = cron.schedule('20,25,30,35,40 21 * * *', async () => {
   logger.info('Rotina de atualização dos associados da Hinova iniciada.')
   await processHinovaMembersListService()
   logger.info('Rotina de atualização dos associados da Hinova finalizada.')
