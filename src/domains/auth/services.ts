@@ -107,13 +107,14 @@ const sendFirstAccessCode = async (email: string, firstAccessCode: string, name:
 }
 
 const createMemberFirstAccess = async (cpf: string): Promise<void> => {
-  const USER_ALREADY_HAS_PASSWORD = 'Usuário já possui senha de acesso.'
+  // const USER_ALREADY_HAS_PASSWORD = 'Usuário já possui senha de acesso.'
   const USER_NOT_FOUND = 'Usuário não encontrado.'
 
   const member = await memberRepositories.findOneByCpf(cpf)
 
   if (member === null) throw new UnauthorizedError(USER_NOT_FOUND)
-  if (member.createdPassword) throw new UnauthorizedError(USER_ALREADY_HAS_PASSWORD)
+  // if (member.createdPassword) throw new UnauthorizedError(USER_ALREADY_HAS_PASSWORD)
+  await memberRepositories.updateOne(member.id, { createdPassword: false })
 
   const firstAccessCode = await generateFirstAccessCode(member.id)
 
