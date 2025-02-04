@@ -29,6 +29,16 @@ export async function inactivateAllHinovaMembersRepository (): Promise<void> {
 
 export async function upsertHinovaMembersRepository (clientId: string, hinovaMember: IHinovaMember): Promise<void> {
   try {
+    const updateData = {
+      clientId,
+      statusId: status.ACTIVE,
+      isHinova: true
+    }
+
+    if (hinovaMember.nome_beneficiario !== '') Object.assign(updateData, { name: hinovaMember.nome_beneficiario })
+    if (hinovaMember.data_nascimento_beneficiario !== '') Object.assign(updateData, { birthDate: hinovaMember.data_nascimento_beneficiario })
+    if (hinovaMember.cep_beneficiario !== '') Object.assign(updateData, { cep: hinovaMember.cep_beneficiario.replace(/\D/g, '') })
+
     await prismaClient.member.upsert({
       create: {
         clientId,
@@ -39,14 +49,7 @@ export async function upsertHinovaMembersRepository (clientId: string, hinovaMem
         statusId: status.ACTIVE,
         isHinova: true
       },
-      update: {
-        clientId,
-        name: hinovaMember.nome_beneficiario,
-        birthDate: hinovaMember.data_nascimento_beneficiario,
-        cep: hinovaMember.cep_beneficiario,
-        statusId: status.ACTIVE,
-        isHinova: true
-      },
+      update: updateData,
       where: { cpf: hinovaMember.cpf_beneficiario }
     })
   } catch (error) {
