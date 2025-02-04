@@ -115,6 +115,7 @@ model Order {
   totalValue   Float    @map("valor_total")
   totalSavings Float    @default(0) @map("economia_total")
   isRecurring  Boolean  @map("compra_recorrente")
+  notes        String?  @map("observacoes")
   statusId     Int      @map("id_status")
   createdAt    DateTime @default(now()) @map("data_de_criacao")
   updatedAt    DateTime @default(now()) @updatedAt @map("data_de_atualizacao")

@@ -32,6 +32,13 @@ const validateCreateOnePayload = (req: Request, _res: Response, next: NextFuncti
         required_error: 'O campo Compra Recorrente ("isRecurring") é obrigatório.'
       }),
 
+    notes: z
+      .string({
+        invalid_type_error: 'O campo Observações ("notes") deve ser uma string.',
+        required_error: 'O campo Observações ("notes") é obrigatório.'
+      })
+      .optional(),
+
     statusId: z
       .number({
         invalid_type_error: 'O campo Status ("statusId") deve ser um number.',
@@ -94,6 +101,7 @@ const validateCreateOnePayload = (req: Request, _res: Response, next: NextFuncti
       totalValue: req.body.totalValue,
       totalSavings: req.body.totalSavings,
       isRecurring: req.body.isRecurring,
+      notes: req.body.notes,
       statusId: req.body.statusId
     })
 

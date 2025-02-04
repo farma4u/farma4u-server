@@ -11,6 +11,7 @@ const createOne = async (req: Request, res: Response): Promise<Response> => {
     memberId: req.body.memberId,
     totalValue: req.body.totalValue,
     totalSavings: req.body.totalSavings,
+    notes: req.body.notes,
     isRecurring: req.body.isRecurring,
     statusId: req.body.statusId,
     items: req.body.items
@@ -60,6 +61,7 @@ const deleteOne = async (req: Request, res: Response): Promise<Response> => {
 //     memberId: req.body.memberId,
 //     totalValue: req.body.totalValue,
 //     totalSavings: req.body.totalSavings,
+//     notes: req.body.notes,
 //     isRecurring: req.body.isRecurring,
 //     statusId: req.body.statusId,
 //     items: req.body.items
