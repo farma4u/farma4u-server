@@ -36,6 +36,7 @@ export async function upsertHinovaMembersRepository (clientId: string, hinovaMem
     }
 
     if (hinovaMember.nome_beneficiario !== '') Object.assign(updateData, { name: hinovaMember.nome_beneficiario })
+    if (hinovaMember.email_beneficiario !== '') Object.assign(updateData, { email: hinovaMember.email_beneficiario })
     if (hinovaMember.data_nascimento_beneficiario !== '') Object.assign(updateData, { birthDate: hinovaMember.data_nascimento_beneficiario })
     if (hinovaMember.cep_beneficiario !== '') Object.assign(updateData, { cep: hinovaMember.cep_beneficiario.replace(/\D/g, '') })
 
@@ -44,6 +45,7 @@ export async function upsertHinovaMembersRepository (clientId: string, hinovaMem
         clientId,
         cpf: hinovaMember.cpf_beneficiario,
         name: hinovaMember.nome_beneficiario,
+        email: hinovaMember.email_beneficiario,
         birthDate: hinovaMember.data_nascimento_beneficiario,
         cep: hinovaMember.cep_beneficiario,
         statusId: status.ACTIVE,

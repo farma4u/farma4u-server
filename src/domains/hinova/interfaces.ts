@@ -6,6 +6,7 @@ export interface IHinovaListMembersReturn {
 export interface IHinovaMember {
   nome_beneficiario: string
   cpf_beneficiario: string
+  email_beneficiario: string
   logradouro_beneficiario: string
   numero_beneficiario: string
   complemento_beneficiario: string
