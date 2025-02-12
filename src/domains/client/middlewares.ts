@@ -152,8 +152,8 @@ const validateCreateOnePayload = (req: Request, _res: Response, next: NextFuncti
       .gte(1, {
         message: 'O campo Status ("statusId") deve 1 (ativo), 2 (inativo) ou 3 (excluído).'
       })
-      .lte(3, {
-        message: 'O campo Status ("statusId") deve 1 (ativo), 2 (inativo) ou 3 (excluído).'
+      .lte(4, {
+        message: 'O campo Status ("statusId") deve 1 (ativo), 2 (inativo), 3 (excluído) ou 4 (inadimplente).'
       })
   })
 
