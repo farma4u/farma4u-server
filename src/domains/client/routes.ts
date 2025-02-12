@@ -54,6 +54,15 @@ clientRouter.patch(
   clientController.inactivateOne
 )
 
+// Marcar cliente como inadimplente
+clientRouter.patch(
+  '/:id/set-as-defaulting',
+  verifyAccessToken,
+  checkIfIsAdmin,
+  validateIdParam,
+  clientController.setOneAsDefaulting
+)
+
 // Excluir cliente
 clientRouter.patch(
   '/:id/delete',

@@ -80,6 +80,16 @@ const inactivateOne = async (req: Request, res: Response): Promise<Response> => 
   return res.status(HttpStatusCode.Ok).json({ message: CLIENT_SUCCESSFULLY_INACTIVATED })
 }
 
+const setOneAsDefaulting = async (req: Request, res: Response): Promise<Response> => {
+  const CLIENT_SUCCESSFULLY_SET_AS_DEFAULTING = 'Cliente marcado como inadimplente com sucesso.'
+
+  const clientId = req.params.id
+
+  await clientService.setOneAsDefaulting(clientId)
+
+  return res.status(HttpStatusCode.Ok).json({ message: CLIENT_SUCCESSFULLY_SET_AS_DEFAULTING })
+}
+
 const deleteOne = async (req: Request, res: Response): Promise<Response> => {
   const CLIENT_SUCCESSFULLY_DELETED = 'Cliente excluído com sucesso.'
 
@@ -125,5 +135,6 @@ export default {
   findMany,
   findOneById,
   inactivateOne,
+  setOneAsDefaulting,
   updateOne
 }

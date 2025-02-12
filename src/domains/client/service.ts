@@ -69,6 +69,11 @@ const inactivateOne = async (id: string): Promise<void> => {
   await memberRepositories.updateMany({ statusId: 2 }, { clientId: id })
 }
 
+const setOneAsDefaulting = async (id: string): Promise<void> => {
+  await clientRepositories.updateOne(id, { statusId: 4 })
+  await memberRepositories.updateMany({ statusId: 4 }, { clientId: id })
+}
+
 const deleteOne = async (id: string): Promise<void> => {
   await clientRepositories.updateOne(id, { statusId: 3 })
   await memberRepositories.updateMany({ statusId: 3 }, { clientId: id })
@@ -85,5 +90,6 @@ export default {
   findMany,
   findOneById,
   inactivateOne,
+  setOneAsDefaulting,
   updateOne
 }
