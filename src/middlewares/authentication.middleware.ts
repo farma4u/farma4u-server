@@ -31,11 +31,17 @@ export const verifyAccessToken = async (req: Request, _res: Response, next: Next
     ) throw new UnauthorizedError(INVALID_ACCESS_TOKEN)
 
     if (
+      !('clientId' in payload) ||
+      (typeof payload.clientId !== 'string')
+    ) throw new UnauthorizedError(INVALID_ACCESS_TOKEN)
+
+    if (
       !('roleId' in payload) ||
       (typeof payload.roleId !== 'number')
     ) throw new UnauthorizedError(INVALID_ACCESS_TOKEN)
 
     req.headers['request-user-id'] = payload.id
+    req.headers['request-user-client-id'] = payload.clientId
     req.headers['request-user-role-id'] = JSON.stringify(payload.roleId)
 
     next()

@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router } from 'express'
 
-import { checkIfIsAdmin, checkIfIsAdminOrMember } from '../../middlewares/authorization.middleware'
+import { checkIfIsMaster, checkIfIsMasterOrMember } from '../../middlewares/authorization.middleware'
 import memberController from './controllers'
 import memberMiddlewares from './middlewares'
-import { validateIdParam } from '../../middlewares/validateIdParam.middleware'
+import { validateUuidParam } from '../../middlewares/validateUuidParam.middleware'
 import { verifyAccessToken } from '../../middlewares/authentication.middleware'
 import multer from 'multer'
 import { multerOptions } from '../../utils/multerOptions'
@@ -15,7 +15,7 @@ const memberRouter: Router = Router()
 memberRouter.post(
   '/',
   verifyAccessToken,
-  checkIfIsAdmin,
+  checkIfIsMaster,
   memberMiddlewares.validateCreateOnePayload,
   memberController.createOne
 )
@@ -24,7 +24,7 @@ memberRouter.post(
 memberRouter.post(
   '/:clientId/create-members-in-bulk',
   verifyAccessToken,
-  checkIfIsAdmin,
+  checkIfIsMaster,
   memberMiddlewares.validateCreateManyPayload,
   multer(multerOptions).single('file'), // salva a imagem e a disponibiliza em req.file
   memberController.createMany
@@ -34,8 +34,8 @@ memberRouter.post(
 memberRouter.get(
   '/:id',
   verifyAccessToken,
-  checkIfIsAdminOrMember,
-  validateIdParam,
+  checkIfIsMasterOrMember,
+  validateUuidParam,
   memberController.findOneById
 )
 
@@ -43,7 +43,7 @@ memberRouter.get(
 memberRouter.get(
   '/',
   verifyAccessToken,
-  checkIfIsAdmin,
+  checkIfIsMaster,
   memberMiddlewares.validatefindManyQueryParams,
   memberController.findMany
 )
@@ -52,8 +52,8 @@ memberRouter.get(
 memberRouter.patch(
   '/:id/activate',
   verifyAccessToken,
-  checkIfIsAdmin,
-  validateIdParam,
+  checkIfIsMaster,
+  validateUuidParam,
   memberController.activateOne
 )
 
@@ -61,8 +61,8 @@ memberRouter.patch(
 memberRouter.patch(
   '/:id/inactivate',
   verifyAccessToken,
-  checkIfIsAdmin,
-  validateIdParam,
+  checkIfIsMaster,
+  validateUuidParam,
   memberController.inactivateOne
 )
 
@@ -70,8 +70,8 @@ memberRouter.patch(
 memberRouter.patch(
   '/:id/delete',
   verifyAccessToken,
-  checkIfIsAdmin,
-  validateIdParam,
+  checkIfIsMaster,
+  validateUuidParam,
   memberController.deleteOne
 )
 
@@ -79,8 +79,8 @@ memberRouter.patch(
 memberRouter.patch(
   '/:id',
   verifyAccessToken,
-  checkIfIsAdmin,
-  validateIdParam,
+  checkIfIsMaster,
+  validateUuidParam,
   memberMiddlewares.validateUpdateOnePayload,
   memberController.updateOne
 )

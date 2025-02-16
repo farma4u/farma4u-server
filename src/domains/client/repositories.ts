@@ -4,7 +4,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 import { BadRequestError, DatabaseError, NotFoundError } from '../../errors'
 import { type ClientToBeCreated, type ClientToBeReturned, type FindManyClientsWhere } from './interfaces'
 import prismaClient from '../../database/connection'
-import { prismaErrors } from '../../enums/prismaErrors'
+import { prismaError } from '../../enums/prismaError'
 import { status } from '../../enums/statusEnum'
 
 const count = async (where: Prisma.ClientWhereInput): Promise<number> => {
@@ -44,7 +44,7 @@ const createOne = async (clientToBeCreated: ClientToBeCreated): Promise<Pick<Cli
   } catch (error) {
     if (
       (error instanceof PrismaClientKnownRequestError) &&
-      (error.code === prismaErrors.ALREADY_EXITS)
+      (error.code === prismaError.ALREADY_EXITS)
     ) throw new BadRequestError(CLIENT_ALREADY_EXISTS)
 
     throw new DatabaseError(error)
@@ -131,7 +131,7 @@ const updateOne = async (id: string, data: Partial<Client>): Promise<void> => {
   } catch (error) {
     if (
       (error instanceof PrismaClientKnownRequestError) &&
-      (error.code === prismaErrors.NOT_FOUND)
+      (error.code === prismaError.NOT_FOUND)
     ) throw new NotFoundError(CLIENT_NOT_FOUND)
 
     throw new DatabaseError(error)
@@ -149,7 +149,7 @@ const addToSavings = async (id: string, savingsToAdd: number): Promise<void> => 
   } catch (error) {
     if (
       (error instanceof PrismaClientKnownRequestError) &&
-      (error.code === prismaErrors.NOT_FOUND)
+      (error.code === prismaError.NOT_FOUND)
     ) throw new NotFoundError(CLIENT_NOT_FOUND)
 
     throw new DatabaseError(error)
@@ -167,7 +167,7 @@ const subtractFromSavings = async (id: string, savingsToSubtract: number): Promi
   } catch (error) {
     if (
       (error instanceof PrismaClientKnownRequestError) &&
-      (error.code === prismaErrors.NOT_FOUND)
+      (error.code === prismaError.NOT_FOUND)
     ) throw new NotFoundError(CLIENT_NOT_FOUND)
 
     throw new DatabaseError(error)

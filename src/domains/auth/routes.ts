@@ -7,9 +7,9 @@ import authMiddlewares from './middlewares'
 const authRouter: Router = Router()
 
 authRouter.post(
-  '/login-admin',
+  '/user/login',
   authMiddlewares.validateLoginPayload,
-  authController.loginAdmin
+  authController.loginMaster
 )
 
 authRouter.post(

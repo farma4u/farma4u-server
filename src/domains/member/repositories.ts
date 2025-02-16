@@ -3,8 +3,13 @@ import prismaClient from '../../database/connection'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 
 import { BadRequestError, DatabaseError, NotFoundError } from '../../errors'
-import { type MemberToBeReturnedOnFindMany, type FindManyMembersWhere, type MemberToBeCreated } from './interfaces'
-import { prismaErrors } from '../../enums/prismaErrors'
+import type {
+  MemberToBeReturnedOnFindMany,
+  FindManyMembersWhere,
+  MemberToBeCreated,
+  MemberWithClientData
+} from './interfaces'
+import { prismaError } from '../../enums/prismaError'
 import { status } from '../../enums/statusEnum'
 
 const MEMBER_NOT_FOUND = 'Associado não encontrado.'
@@ -33,7 +38,7 @@ const createOne = async (memberToBeCreated: MemberToBeCreated): Promise<Pick<Mem
   } catch (error) {
     if (
       (error instanceof PrismaClientKnownRequestError) &&
-      (error.code === prismaErrors.ALREADY_EXITS)
+      (error.code === prismaError.ALREADY_EXITS)
     ) throw new BadRequestError(MEMBER_ALREADY_EXISTS)
 
     throw new DatabaseError(error)
@@ -88,10 +93,18 @@ const findMany = async (
   }
 }
 
-const findOneByCpf = async (cpf: string): Promise<Member | null> => {
+const findOneByCpf = async (cpf: string): Promise<MemberWithClientData | null> => {
   try {
     const member = await prismaClient.member.findUnique({
-      where: { cpf, statusId: status.ACTIVE }
+      where: { cpf, statusId: status.ACTIVE },
+      include: {
+        client: {
+          select: {
+            id: true,
+            fantasyName: true
+          }
+        }
+      }
     })
 
     return member
@@ -142,7 +155,7 @@ const updateMany = async (
   } catch (error) {
     if (
       (error instanceof PrismaClientKnownRequestError) &&
-      (error.code === prismaErrors.NOT_FOUND)
+      (error.code === prismaError.NOT_FOUND)
     ) throw new NotFoundError(`${MEMBER_NOT_FOUND}${data.id !== null ? ' (id: ' + data.id + ')' : ''}`)
 
     throw new DatabaseError(error)
@@ -158,7 +171,7 @@ const updateOne = async (id: string, data: Partial<Member>): Promise<void> => {
   } catch (error) {
     if (
       (error instanceof PrismaClientKnownRequestError) &&
-      (error.code === prismaErrors.NOT_FOUND)
+      (error.code === prismaError.NOT_FOUND)
     ) throw new NotFoundError(MEMBER_NOT_FOUND)
 
     throw new DatabaseError(error)
@@ -174,7 +187,7 @@ const addToSavings = async (id: string, savingsToAdd: number): Promise<void> => 
   } catch (error) {
     if (
       (error instanceof PrismaClientKnownRequestError) &&
-      (error.code === prismaErrors.NOT_FOUND)
+      (error.code === prismaError.NOT_FOUND)
     ) throw new NotFoundError(MEMBER_NOT_FOUND)
 
     throw new DatabaseError(error)
@@ -190,7 +203,7 @@ const subtractFromSavings = async (id: string, savingsToSubtract: number): Promi
   } catch (error) {
     if (
       (error instanceof PrismaClientKnownRequestError) &&
-      (error.code === prismaErrors.NOT_FOUND)
+      (error.code === prismaError.NOT_FOUND)
     ) throw new NotFoundError(MEMBER_NOT_FOUND)
 
     throw new DatabaseError(error)
@@ -229,7 +242,7 @@ const deleteOneFirstAccessCode = async (memberId: string): Promise<void> => {
   } catch (error) {
     if (
       (error instanceof PrismaClientKnownRequestError) &&
-      (error.code === prismaErrors.NOT_FOUND)
+      (error.code === prismaError.NOT_FOUND)
     ) throw new NotFoundError(MEMBER_NOT_FOUND)
 
     throw new DatabaseError(error)

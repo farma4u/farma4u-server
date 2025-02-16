@@ -3,8 +3,8 @@ import { z } from 'zod'
 
 import { BadRequestError, GenericError } from '../errors'
 
-const validateIdParam = (req: Request, _res: Response, next: NextFunction): void => {
-  const createOnePayloadSchema = z.object({
+export function validateUuidParam (req: Request, _res: Response, next: NextFunction): void {
+  const idParamSchema = z.object({
     id: z
       .string({
         invalid_type_error: '"id" deve ser uma string.',
@@ -16,7 +16,7 @@ const validateIdParam = (req: Request, _res: Response, next: NextFunction): void
   })
 
   try {
-    createOnePayloadSchema.parse({
+    idParamSchema.parse({
       id: req.params.id
     })
   } catch (error) {
@@ -29,5 +29,3 @@ const validateIdParam = (req: Request, _res: Response, next: NextFunction): void
 
   next()
 }
-
-export { validateIdParam }

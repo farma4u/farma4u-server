@@ -3,12 +3,12 @@ import { type Request, type Response } from 'express'
 
 import authService from './services'
 
-const loginAdmin = async (req: Request, res: Response): Promise<Response> => {
+const loginMaster = async (req: Request, res: Response): Promise<Response> => {
   const SUCCESSFULLY_LOGGED_IN = 'Usuário logado com sucesso.'
 
   const { cpf, password }: { cpf: string, password: string } = req.body
 
-  const { accessToken, user } = await authService.loginAdmin(cpf, password)
+  const { accessToken, user } = await authService.loginMaster(cpf, password)
 
   res.setHeader('access-token', accessToken)
 
@@ -50,6 +50,6 @@ const createMemberFirstPassword = async (req: Request, res: Response): Promise<R
 export default {
   createMemberFirstAccess,
   createMemberFirstPassword,
-  loginAdmin,
+  loginMaster,
   loginMember
 }

@@ -4,20 +4,24 @@ import { SignJWT } from 'jose'
 
 import { BadRequestError, InternalServerError, UnauthorizedError } from '../../errors'
 import { getEnvironmentVariable } from '../../utils/getEnvironmentVariable'
-import { type ILoginResponse } from './interfaces'
+import type { IMemberLoginResponse, IUserLoginResponse } from './interfaces'
 import memberRepositories from '../member/repositories'
 import { role } from '../../enums/roleEnum'
 import { sendEmail } from '../../utils/mailer'
 import userRepositories from '../user/repositories'
+import type { AccessTokenData } from '../../interfaces'
+import { status } from '../../enums/statusEnum'
 
-const generateAccessToken = async (id: string, roleId: number): Promise<string> => {
+const generateAccessToken = async (accessTokenData: AccessTokenData): Promise<string> => {
   const JWT_SECRET = getEnvironmentVariable('JWT_SECRET')
   const JWT_ISSUER = getEnvironmentVariable('JWT_ISSUER')
   const JWT_AUDIENCE = getEnvironmentVariable('JWT_AUDIENCE')
 
   const secretKey = createSecretKey(JWT_SECRET, 'utf8')
 
-  const accessToken = await new SignJWT({ id, roleId })
+  const { id, clientId, roleId } = accessTokenData
+
+  const accessToken = await new SignJWT({ id, clientId, roleId })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setIssuer(JWT_ISSUER)
@@ -28,13 +32,13 @@ const generateAccessToken = async (id: string, roleId: number): Promise<string> 
   return accessToken
 }
 
-const loginAdmin = async (cpf: string, password: string): Promise<ILoginResponse> => {
+const loginMaster = async (cpf: string, password: string): Promise<IUserLoginResponse> => {
   const BAD_CREDENTIALS = 'Credenciais inválidas.'
   const USER_NOT_FOUND = 'Usuário não encontrado.'
 
-  const user = await userRepositories.findOneByCpf(cpf)
+  const user = await userRepositories.findOne({ cpf }, { statusId: status.ACTIVE })
 
-  if (user === null || user.roleId !== role.ADMIN) {
+  if (user === null || user.role.id !== role.MASTER) {
     logger.error({ cpf }, USER_NOT_FOUND)
 
     throw new UnauthorizedError(BAD_CREDENTIALS)
@@ -44,19 +48,26 @@ const loginAdmin = async (cpf: string, password: string): Promise<ILoginResponse
 
   if (!isPasswordValid) throw new UnauthorizedError(BAD_CREDENTIALS)
 
-  const accessToken = await generateAccessToken(user.id, user.roleId)
+  const { id, client, role: { id: roleId } } = user
+
+  const accessToken = await generateAccessToken({
+    id,
+    clientId: client === null ? '' : client.id,
+    roleId
+  })
 
   return {
     accessToken,
     user: {
       id: user.id,
       name: user.name,
-      roleId: user.roleId
+      roleId: user.role.id,
+      client: user.client
     }
   }
 }
 
-const loginMember = async (cpf: string, password: string): Promise<ILoginResponse> => {
+const loginMember = async (cpf: string, password: string): Promise<IMemberLoginResponse> => {
   const BAD_CREDENTIALS = 'Credenciais inválidas.'
   const MEMBER_NOT_FOUND = 'Associado não encontrado.'
   const MEMBER_WITHOUT_PASSWORD = 'Associado ainda não criou a senha. Por favor, realize o primeiro acesso.'
@@ -75,14 +86,21 @@ const loginMember = async (cpf: string, password: string): Promise<ILoginRespons
 
   if (!isPasswordValid) throw new UnauthorizedError(BAD_CREDENTIALS)
 
-  const accessToken = await generateAccessToken(member.id, role.MEMBER)
+  const { id, client } = member
+
+  const accessToken = await generateAccessToken({
+    id,
+    clientId: client === null ? '' : client.id,
+    roleId: role.MEMBER
+  })
 
   return {
     accessToken,
     user: {
       id: member.id,
       name: member.name,
-      roleId: role.MEMBER
+      roleId: role.MEMBER,
+      client: member.client
     }
   }
 }
@@ -156,6 +174,6 @@ const createMemberFirstPassword = async (cpf: string, firstAccessCode: string, n
 export default {
   createMemberFirstAccess,
   createMemberFirstPassword,
-  loginAdmin,
+  loginMaster,
   loginMember
 }

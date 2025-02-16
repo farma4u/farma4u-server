@@ -15,15 +15,31 @@ model User {
   password  String   @map("senha")
   statusId  Int      @map("id_status")
   roleId    Int      @map("id_cargo")
+  clientId  String?  @map("id_cliente")
   createdAt DateTime @default(now()) @map("data_de_criacao")
   updatedAt DateTime @default(now()) @updatedAt @map("data_de_atualizacao")
 
   // Relation
   role   Role   @relation(fields: [roleId], references: [id])
   status Status @relation(fields: [statusId], references: [id])
+  client                 Client?                 @relation(fields: [clientId], references: [id])
+  userResetPasswordCodes UserResetPasswordCode[]
+
 
   @@index(name)
   @@map("usuario")
+}
+
+model UserResetPasswordCode {
+  userId    String   @id @map("id_usuario")
+  resetCode String   @map("codigo_de_redefinicao")
+  createdAt DateTime @default(now()) @map("data_de_criacao")
+  updatedAt DateTime @default(now()) @updatedAt @map("data_de_atualizacao")
+
+  // Relation
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("codigo_redefinicao_de_senha_de_usuario")
 }
 
 model Role {
@@ -64,6 +80,7 @@ model Client {
   status  Status   @relation(fields: [statusId], references: [id])
   members Member[]
   orders  Order[]
+  users                     User[]
 
   @@index(fantasyName)
   @@map("cliente")

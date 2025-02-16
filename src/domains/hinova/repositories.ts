@@ -1,7 +1,7 @@
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 import prismaClient from '../../database/connection'
 import { status } from '../../enums/statusEnum'
-import { prismaErrors } from '../../enums/prismaErrors'
+import { prismaError } from '../../enums/prismaError'
 import { DatabaseError } from '../../errors'
 import type { IHinovaMember } from './interfaces'
 import type { Client } from '@prisma/client'
@@ -20,7 +20,7 @@ export async function inactivateAllHinovaMembersRepository (): Promise<void> {
   } catch (error) {
     if (
       (error instanceof PrismaClientKnownRequestError) &&
-      (error.code === prismaErrors.NOT_FOUND)
+      (error.code === prismaError.NOT_FOUND)
     ) logger.error('Nenhum associado da Hinova encontrado.')
 
     throw new DatabaseError(error)
@@ -75,7 +75,7 @@ export async function findAllHinovaClientsRepository (): Promise<Client[]> {
   } catch (error) {
     if (
       (error instanceof PrismaClientKnownRequestError) &&
-      (error.code === prismaErrors.NOT_FOUND)
+      (error.code === prismaError.NOT_FOUND)
     ) logger.error('Nenhum cliente integrado à Hinova encontrado.')
 
     throw new DatabaseError(error)

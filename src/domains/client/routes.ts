@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router } from 'express'
 
-import { checkIfIsAdmin } from '../../middlewares/authorization.middleware'
+import { checkIfIsMaster } from '../../middlewares/authorization.middleware'
 import clientController from './controllers'
 import clientMiddlewares from './middlewares'
-import { validateIdParam } from '../../middlewares/validateIdParam.middleware'
+import { validateUuidParam } from '../../middlewares/validateUuidParam.middleware'
 import { verifyAccessToken } from '../../middlewares/authentication.middleware'
 
 const clientRouter: Router = Router()
@@ -13,7 +13,7 @@ const clientRouter: Router = Router()
 clientRouter.post(
   '/',
   verifyAccessToken,
-  checkIfIsAdmin,
+  checkIfIsMaster,
   clientMiddlewares.validateCreateOnePayload,
   clientController.createOne
 )
@@ -22,8 +22,8 @@ clientRouter.post(
 clientRouter.get(
   '/:id',
   verifyAccessToken,
-  checkIfIsAdmin,
-  validateIdParam,
+  checkIfIsMaster,
+  validateUuidParam,
   clientController.findOneById
 )
 
@@ -31,7 +31,7 @@ clientRouter.get(
 clientRouter.get(
   '/',
   verifyAccessToken,
-  checkIfIsAdmin,
+  checkIfIsMaster,
   clientMiddlewares.validateFindManyQueryParams,
   clientController.findMany
 )
@@ -40,8 +40,8 @@ clientRouter.get(
 clientRouter.patch(
   '/:id/activate',
   verifyAccessToken,
-  checkIfIsAdmin,
-  validateIdParam,
+  checkIfIsMaster,
+  validateUuidParam,
   clientController.activateOne
 )
 
@@ -49,8 +49,8 @@ clientRouter.patch(
 clientRouter.patch(
   '/:id/inactivate',
   verifyAccessToken,
-  checkIfIsAdmin,
-  validateIdParam,
+  checkIfIsMaster,
+  validateUuidParam,
   clientController.inactivateOne
 )
 
@@ -58,8 +58,8 @@ clientRouter.patch(
 clientRouter.patch(
   '/:id/set-as-defaulting',
   verifyAccessToken,
-  checkIfIsAdmin,
-  validateIdParam,
+  checkIfIsMaster,
+  validateUuidParam,
   clientController.setOneAsDefaulting
 )
 
@@ -67,8 +67,8 @@ clientRouter.patch(
 clientRouter.patch(
   '/:id/delete',
   verifyAccessToken,
-  checkIfIsAdmin,
-  validateIdParam,
+  checkIfIsMaster,
+  validateUuidParam,
   clientController.deleteOne
 )
 
@@ -76,8 +76,8 @@ clientRouter.patch(
 clientRouter.patch(
   '/:id',
   verifyAccessToken,
-  checkIfIsAdmin,
-  validateIdParam,
+  checkIfIsMaster,
+  validateUuidParam,
   clientMiddlewares.validateUpdateOnePayload,
   clientController.updateOne
 )

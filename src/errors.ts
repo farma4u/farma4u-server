@@ -51,8 +51,8 @@ export class UnauthorizedError extends BaseAPIError {
 }
 
 export class ForbiddenError extends BaseAPIError {
-  constructor () {
-    super(FORBIDDEN_ERROR, HttpStatusCode.Forbidden)
+  constructor (message?: string) {
+    super(message ?? FORBIDDEN_ERROR, HttpStatusCode.Forbidden)
   }
 }
 

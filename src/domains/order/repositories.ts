@@ -4,7 +4,7 @@ import { BadRequestError, DatabaseError, NotFoundError } from '../../errors'
 import { type ItemToBeCreated, type OrderToBeCreated } from './interfaces'
 import prismaClient from '../../database/connection'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
-import { prismaErrors } from '../../enums/prismaErrors'
+import { prismaError } from '../../enums/prismaError'
 
 const createOne = async ({ items, ...orderToBeCreated }: OrderToBeCreated & { clientId: string }): Promise<Pick<Order, 'id'>> => {
   const ORDER_ALREADY_EXISTS = 'Pedido já cadastrado.'
@@ -21,7 +21,7 @@ const createOne = async ({ items, ...orderToBeCreated }: OrderToBeCreated & { cl
   } catch (error) {
     if (
       (error instanceof PrismaClientKnownRequestError) &&
-      (error.code === prismaErrors.ALREADY_EXITS)
+      (error.code === prismaError.ALREADY_EXITS)
     ) throw new BadRequestError(ORDER_ALREADY_EXISTS)
 
     throw new DatabaseError(error)
@@ -38,7 +38,7 @@ const createManyItems = async (orderId: string, items: ItemToBeCreated[]): Promi
   } catch (error) {
     if (
       (error instanceof PrismaClientKnownRequestError) &&
-      (error.code === prismaErrors.ALREADY_EXITS)
+      (error.code === prismaError.ALREADY_EXITS)
     ) throw new BadRequestError(ITEM_ALREADY_EXISTS)
 
     throw new DatabaseError(error)
@@ -71,7 +71,7 @@ const updateOne = async (id: string, data: Partial<Order>): Promise<Order> => {
   } catch (error) {
     if (
       (error instanceof PrismaClientKnownRequestError) &&
-      (error.code === prismaErrors.NOT_FOUND)
+      (error.code === prismaError.NOT_FOUND)
     ) throw new NotFoundError(ORDER_NOT_FOUND)
 
     throw new DatabaseError(error)

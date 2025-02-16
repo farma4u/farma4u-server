@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router } from 'express'
 
-import { checkIfIsAdmin } from '../../middlewares/authorization.middleware'
+import { checkIfIsMaster } from '../../middlewares/authorization.middleware'
 import orderController from './controller'
 import orderMiddlewares from './middlewares'
 import { verifyAccessToken } from '../../middlewares/authentication.middleware'
-import { validateIdParam } from '../../middlewares/validateIdParam.middleware'
+import { validateUuidParam } from '../../middlewares/validateUuidParam.middleware'
 
 const orderRouter: Router = Router()
 
@@ -13,7 +13,7 @@ const orderRouter: Router = Router()
 orderRouter.post(
   '/',
   verifyAccessToken,
-  checkIfIsAdmin,
+  checkIfIsMaster,
   orderMiddlewares.validateCreateOnePayload,
   orderController.createOne
 )
@@ -22,8 +22,8 @@ orderRouter.post(
 orderRouter.patch(
   '/:id/activate',
   verifyAccessToken,
-  checkIfIsAdmin,
-  validateIdParam,
+  checkIfIsMaster,
+  validateUuidParam,
   orderController.activateOne
 )
 
@@ -31,8 +31,8 @@ orderRouter.patch(
 orderRouter.patch(
   '/:id/inactivate',
   verifyAccessToken,
-  checkIfIsAdmin,
-  validateIdParam,
+  checkIfIsMaster,
+  validateUuidParam,
   orderController.inactivateOne
 )
 
@@ -40,8 +40,8 @@ orderRouter.patch(
 orderRouter.patch(
   '/:id/delete',
   verifyAccessToken,
-  checkIfIsAdmin,
-  validateIdParam,
+  checkIfIsMaster,
+  validateUuidParam,
   orderController.deleteOne
 )
 
@@ -49,8 +49,8 @@ orderRouter.patch(
 // orderRouter.patch(
 //   '/:id',
 //   verifyAccessToken,
-//   checkIfIsAdmin,
-//   validateIdParam,
+//   checkIfIsMaster,
+//   validateUuidParam,
 //   orderController.updateOne
 // )
 

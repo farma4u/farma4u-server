@@ -1,4 +1,5 @@
 import { type Prisma, type Item, type Member, type Order } from '@prisma/client'
+import type { ClientMinData } from '../client/interfaces'
 
 export interface FindManyMembersQueryParams {
   clientCnpj?: string
@@ -18,3 +19,7 @@ export type MemberToBeUpdated = Omit<MemberToBeCreated, 'cpf' | 'statusId'>
 export type MemberToBeReturned = Omit<Member, 'password' | 'createdPassword' | 'updatedAt'> & { orders: Array<Order & { items: Item[] }> }
 
 export type MemberToBeReturnedOnFindMany = Omit<MemberToBeReturned, 'orders' | 'clientId' | 'isHinova'> & { client: { cnpj: string, fantasyName: string } }
+
+export type MemberWithClientData = Member & { client: ClientMinData | null }
+
+export type MemberLoginInfo = Pick<MemberWithClientData, 'id' | 'name' | 'client'> & { roleId: number }

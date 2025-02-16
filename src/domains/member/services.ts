@@ -15,7 +15,7 @@ import {
 import { type FindManyResponse } from '../../interfaces'
 import memberRepositories from './repositories'
 import { status } from '../../enums/statusEnum'
-import { prismaErrors } from '../../enums/prismaErrors'
+import { prismaError } from '../../enums/prismaError'
 
 const createOne = async (memberToBeCreated: MemberToBeCreated): Promise<string> => {
   const INVALID_CLIENT = 'Cliente inválido.'
@@ -58,7 +58,7 @@ const createMany = async (clientId: string, fileBuffer: Buffer): Promise<void> =
       } catch (error) {
         if (
           (error instanceof PrismaClientKnownRequestError) &&
-          (error.code === prismaErrors.ALREADY_EXITS)
+          (error.code === prismaError.ALREADY_EXITS)
         ) {
           logger.error(`O associado de CPF ${row.cpf} não foi cadastrado: esse CPF já existe no banco de dados.`)
         }
