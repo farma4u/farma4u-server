@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router } from 'express'
 
-import { checkIfIsMaster, checkIfIsMasterOrMember } from '../../middlewares/authorization.middleware'
+import { checkIfIsMaster, checkIfIsMasterOrClientOrMember } from '../../middlewares/authorization.middleware'
 import memberController from './controllers'
 import memberMiddlewares from './middlewares'
 import { validateUuidParam } from '../../middlewares/validateUuidParam.middleware'
@@ -34,7 +34,7 @@ memberRouter.post(
 memberRouter.get(
   '/:id',
   verifyAccessToken,
-  checkIfIsMasterOrMember,
+  checkIfIsMasterOrClientOrMember,
   validateUuidParam,
   memberController.findOneById
 )

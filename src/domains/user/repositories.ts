@@ -6,7 +6,7 @@ import { BadRequestError, DatabaseError, NotFoundError } from '../../errors'
 import { status } from '../../enums/statusEnum'
 import type { FindManyUsersParams, UserToBeCreated, UserToBeReturnedInFindMany } from './interfaces'
 import type { UserToBeReturned } from '../auth/interfaces'
-import { prismaError } from '../../enums/prismaErrors'
+import { prismaError } from '../../enums/prismaError'
 
 const createOne = async (userToBeCreated: UserToBeCreated): Promise<Pick<User, 'id'>> => {
   try {
