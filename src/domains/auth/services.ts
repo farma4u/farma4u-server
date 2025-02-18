@@ -32,7 +32,7 @@ const generateAccessToken = async (accessTokenData: AccessTokenData): Promise<st
   return accessToken
 }
 
-const loginMaster = async (cpf: string, password: string): Promise<IUserLoginResponse> => {
+const loginUser = async (cpf: string, password: string): Promise<IUserLoginResponse> => {
   const BAD_CREDENTIALS = 'Credenciais inválidas.'
   const USER_NOT_FOUND = 'Usuário não encontrado.'
 
@@ -65,6 +65,67 @@ const loginMaster = async (cpf: string, password: string): Promise<IUserLoginRes
       client: user.client
     }
   }
+}
+
+async function generateResetPasswordCode (userId: string): Promise<string> {
+  const resetPasswordCode = randomBytes(3).toString('hex')
+
+  const encryptedResetPasswordCode = await bcrypt.hash(resetPasswordCode, 10)
+
+  await userRepositories.upsertOneResetPasswordCode(userId, encryptedResetPasswordCode)
+
+  return resetPasswordCode
+}
+
+async function sendResetPasswordCode (email: string, resetPasswordCode: string, name: string): Promise<void> {
+  const SUBJECT = 'Farma4u - Redefina sua senha!'
+  const BODY = `Olá, ${name}! Seu código de acesso é: ${resetPasswordCode}. Utilize-o para redefinir sua senha.`
+
+  const mailSent = await sendEmail(SUBJECT, BODY, email)
+
+  logger.debug(mailSent, 'Resposta do envio do email.')
+}
+
+async function requestResetUserPassword (cpf: string): Promise<void> {
+  const USER_NOT_FOUND = 'Usuário não encontrado.'
+  const USER_EMAIL_NOT_FOUND = 'Usuário não possui email cadastrado.'
+
+  const user = await userRepositories.findOne({ cpf }, { statusId: status.ACTIVE })
+
+  if (user === null) throw new UnauthorizedError(USER_NOT_FOUND)
+  if (user.email === null) throw new UnauthorizedError(USER_EMAIL_NOT_FOUND)
+
+  const resetPasswordCode = await generateResetPasswordCode(user.id)
+
+  await sendResetPasswordCode(user.email, resetPasswordCode, user.name ?? '')
+
+  logger.debug({ resetPasswordCode }, 'Código de acesso gerado.')
+}
+
+async function resetUserPassword (cpf: string, resetPasswordCode: string, newPassword: string): Promise<void> {
+  const INVALID_RESET_PASSWORD_CODE = 'Código de redefinição de senha inválido.'
+  const USER_DID_NOT_REQUESTED_PASSWORD_RESET = 'Usuário ainda não requisitou o código de redefinição de senha.'
+  const USER_NOT_FOUND = 'Usuário não encontrado.'
+
+  const user = await userRepositories.findOne({ cpf }, { statusId: status.ACTIVE })
+
+  if (user === null) throw new UnauthorizedError(USER_NOT_FOUND)
+
+  const resetPasswordCodeData = await userRepositories.findOneResetPasswordCode(user.id)
+
+  if (resetPasswordCodeData === null) throw new BadRequestError(USER_DID_NOT_REQUESTED_PASSWORD_RESET)
+
+  const encryptedResetPasswordCode = resetPasswordCodeData.resetCode
+
+  const isResetPasswordCodeValid = await bcrypt.compare(resetPasswordCode, encryptedResetPasswordCode)
+
+  if (!isResetPasswordCodeValid) throw new UnauthorizedError(INVALID_RESET_PASSWORD_CODE)
+
+  const encryptedPassword = await bcrypt.hash(newPassword, 10)
+
+  await userRepositories.updateOne(user.id, { password: encryptedPassword })
+
+  await userRepositories.deleteOneResetPasswordCode(user.id)
 }
 
 const loginMember = async (cpf: string, password: string): Promise<IMemberLoginResponse> => {
@@ -117,7 +178,7 @@ const generateFirstAccessCode = async (memberId: string): Promise<string> => {
 
 const sendFirstAccessCode = async (email: string, firstAccessCode: string, name: string): Promise<void> => {
   const SUBJECT = 'Farma4u - Crie sua senha de acesso!'
-  const BODY = `Olá, ${name}! Seu código de acesso é: ${firstAccessCode}`
+  const BODY = `Olá, ${name}! Seu código de acesso é: ${firstAccessCode}. Utilize-o para redefinir sua senha.`
 
   const mailSent = await sendEmail(SUBJECT, BODY, email)
 
@@ -174,6 +235,8 @@ const createMemberFirstPassword = async (cpf: string, firstAccessCode: string, n
 export default {
   createMemberFirstAccess,
   createMemberFirstPassword,
-  loginMaster,
-  loginMember
+  loginUser,
+  loginMember,
+  requestResetUserPassword,
+  resetUserPassword
 }

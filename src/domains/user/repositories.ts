@@ -1,6 +1,6 @@
 import prismaClient from '../../database/connection'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
-import type { Prisma, User } from '@prisma/client'
+import type { Prisma, User, UserResetPasswordCode } from '@prisma/client'
 
 import { BadRequestError, DatabaseError, NotFoundError } from '../../errors'
 import { status } from '../../enums/statusEnum'
@@ -141,10 +141,54 @@ async function updateOne (id: string, data: Partial<User>): Promise<string> {
   }
 }
 
+async function upsertOneResetPasswordCode (userId: string, resetCode: string): Promise<void> {
+  try {
+    await prismaClient.userResetPasswordCode.upsert({
+      create: { userId, resetCode },
+      update: { resetCode },
+      where: { userId }
+    })
+  } catch (error) {
+    throw new DatabaseError(error)
+  }
+}
+
+async function findOneResetPasswordCode (userId: string): Promise<UserResetPasswordCode | null> {
+  try {
+    const resetPasswordCodeData = await prismaClient.userResetPasswordCode.findUnique({
+      where: { userId }
+    })
+
+    return resetPasswordCodeData
+  } catch (error) {
+    throw new DatabaseError(error)
+  }
+}
+
+async function deleteOneResetPasswordCode (userId: string): Promise<void> {
+  const USER_NOT_FOUND = 'Usuário não encontrado.'
+
+  try {
+    await prismaClient.userResetPasswordCode.delete({
+      where: { userId }
+    })
+  } catch (error) {
+    if (
+      (error instanceof PrismaClientKnownRequestError) &&
+      (error.code === prismaError.NOT_FOUND)
+    ) throw new NotFoundError(USER_NOT_FOUND)
+
+    throw new DatabaseError(error)
+  }
+}
+
 export default {
   createOne,
   count,
   findOne,
   findMany,
-  updateOne
+  updateOne,
+  upsertOneResetPasswordCode,
+  findOneResetPasswordCode,
+  deleteOneResetPasswordCode
 }
