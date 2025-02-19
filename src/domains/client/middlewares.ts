@@ -207,7 +207,8 @@ const validateFindManyQueryParams = (req: Request, _res: Response, next: NextFun
       })
       .lte(1000, {
         message: 'O campo Quantidade de Registros ("take") deve ser menor ou igual a 1000.'
-      }),
+      })
+      .optional(),
 
     fantasyName: z
       .string({
@@ -226,7 +227,8 @@ const validateFindManyQueryParams = (req: Request, _res: Response, next: NextFun
       })
       .gte(0, {
         message: 'O campo Pular Registros ("skip") deve ser maior ou igual a 0.'
-      }),
+      })
+      .optional(),
 
     statusId: z
       .number({

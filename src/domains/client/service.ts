@@ -37,7 +37,7 @@ const findMany = async ({ skip, take, ...queryParams }: FindManyClientsQueryPara
     }
   })
 
-  const clients = await clientRepositories.findMany(skip, take, where)
+  const clients = await clientRepositories.findMany(where, skip, take)
 
   if (clients.length === 0) throw new NotFoundError(CLIENTS_NOT_FOUND)
 

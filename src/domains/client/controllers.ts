@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import { HttpStatusCode } from 'axios'
 import { type Request, type Response } from 'express'
 
@@ -36,8 +37,8 @@ const findMany = async (req: Request, res: Response): Promise<Response> => {
   const CLIENTS_FOUND = 'Clientes recuperados com sucesso.'
 
   const queryParams: FindManyClientsQueryParams = {
-    take: parseInt(req.query.take as string),
-    skip: parseInt(req.query.skip as string),
+    take: req.query.take ? parseInt(req.query.take as string) : undefined,
+    skip: req.query.skip ? parseInt(req.query.skip as string) : undefined,
     cnpj: req.query.cnpj as string | undefined,
     fantasyName: req.query['fantasy-name'] as string | undefined,
     statusId: req.query['status-id'] !== undefined ? parseInt(req.query['status-id'] as string) : undefined

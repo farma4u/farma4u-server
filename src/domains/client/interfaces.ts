@@ -7,9 +7,9 @@ export type ClientToBeReturned = Omit<Client, 'updatedAt'>
 export type ClientToBeUpdated = Omit<ClientToBeCreated, 'cnpj' | 'statusId'>
 export interface FindManyClientsQueryParams {
   cnpj?: string
-  take: number
+  take?: number
   fantasyName?: string
-  skip: number
+  skip?: number
   statusId?: number | typeof NaN
 }
 

@@ -52,9 +52,9 @@ const createOne = async (clientToBeCreated: ClientToBeCreated): Promise<Pick<Cli
 }
 
 const findMany = async (
-  skip: number,
-  take: number,
-  where: Partial<FindManyClientsWhere>
+  where: Partial<FindManyClientsWhere>,
+  skip?: number,
+  take?: number
 ): Promise<ClientToBeReturned[]> => {
   try {
     const clients = await prismaClient.client.findMany({
