@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router } from 'express'
 
-import { checkIfIsMaster, checkIfIsMasterOrClientOrMember } from '../../middlewares/authorization.middleware'
+import { checkIfIsMasterOrClient, checkIfIsMasterOrClientOrMember } from '../../middlewares/authorization.middleware'
 import memberController from './controllers'
 import memberMiddlewares from './middlewares'
 import { validateUuidParam } from '../../middlewares/validateUuidParam.middleware'
@@ -15,7 +15,8 @@ const memberRouter: Router = Router()
 memberRouter.post(
   '/',
   verifyAccessToken,
-  checkIfIsMaster,
+  checkIfIsMasterOrClient,
+  memberMiddlewares.checkIfIsSameClientId,
   memberMiddlewares.validateCreateOnePayload,
   memberController.createOne
 )
@@ -24,7 +25,8 @@ memberRouter.post(
 memberRouter.post(
   '/:clientId/create-members-in-bulk',
   verifyAccessToken,
-  checkIfIsMaster,
+  checkIfIsMasterOrClient,
+  memberMiddlewares.checkIfIsSameClientId,
   memberMiddlewares.validateCreateManyPayload,
   multer(multerOptions).single('file'), // salva a imagem e a disponibiliza em req.file
   memberController.createMany
@@ -36,6 +38,7 @@ memberRouter.get(
   verifyAccessToken,
   checkIfIsMasterOrClientOrMember,
   validateUuidParam,
+  memberMiddlewares.checkIfIsSameMemberId,
   memberController.findOneById
 )
 
@@ -43,7 +46,7 @@ memberRouter.get(
 memberRouter.get(
   '/',
   verifyAccessToken,
-  checkIfIsMaster,
+  checkIfIsMasterOrClient,
   memberMiddlewares.validatefindManyQueryParams,
   memberController.findMany
 )
@@ -52,8 +55,9 @@ memberRouter.get(
 memberRouter.patch(
   '/:id/activate',
   verifyAccessToken,
-  checkIfIsMaster,
+  checkIfIsMasterOrClient,
   validateUuidParam,
+  memberMiddlewares.checkIfIsSameClientId,
   memberController.activateOne
 )
 
@@ -61,8 +65,9 @@ memberRouter.patch(
 memberRouter.patch(
   '/:id/inactivate',
   verifyAccessToken,
-  checkIfIsMaster,
+  checkIfIsMasterOrClient,
   validateUuidParam,
+  memberMiddlewares.checkIfIsSameClientId,
   memberController.inactivateOne
 )
 
@@ -70,8 +75,9 @@ memberRouter.patch(
 memberRouter.patch(
   '/:id/delete',
   verifyAccessToken,
-  checkIfIsMaster,
+  checkIfIsMasterOrClient,
   validateUuidParam,
+  memberMiddlewares.checkIfIsSameClientId,
   memberController.deleteOne
 )
 
@@ -79,8 +85,9 @@ memberRouter.patch(
 memberRouter.patch(
   '/:id',
   verifyAccessToken,
-  checkIfIsMaster,
+  checkIfIsMasterOrClient,
   validateUuidParam,
+  memberMiddlewares.checkIfIsSameClientId,
   memberMiddlewares.validateUpdateOnePayload,
   memberController.updateOne
 )

@@ -113,7 +113,13 @@ const findOneByCpf = async (cpf: string): Promise<MemberWithClientData | null> =
   }
 }
 
-const findOneById = async (id: string, data?: Partial<Member>): Promise<Member & { orders: Array<Order & { items: Item[] }> } | null> => {
+const findOneById = async (
+  id: string,
+  data?: Prisma.MemberWhereInput
+): Promise<Member & {
+  orders: Array<Order & { items: Item[] }>
+  client: { id: string, cnpj: string, fantasyName: string }
+} | null> => {
   try {
     const where = { id }
 
@@ -124,6 +130,7 @@ const findOneById = async (id: string, data?: Partial<Member>): Promise<Member &
       include: {
         client: {
           select: {
+            id: true,
             cnpj: true,
             fantasyName: true
           }

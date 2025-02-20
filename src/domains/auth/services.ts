@@ -38,7 +38,7 @@ const loginUser = async (cpf: string, password: string): Promise<IUserLoginRespo
 
   const user = await userRepositories.findOne({ cpf }, { statusId: status.ACTIVE })
 
-  if (user === null || user.role.id !== role.MASTER) {
+  if (user === null || (user.role.id !== role.MASTER && user.role.id !== role.CLIENT_ADMIN)) {
     logger.error({ cpf }, USER_NOT_FOUND)
 
     throw new UnauthorizedError(BAD_CREDENTIALS)

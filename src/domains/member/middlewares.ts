@@ -1,7 +1,9 @@
 import { type NextFunction, type Request, type Response } from 'express'
 import { z } from 'zod'
 
-import { BadRequestError, GenericError } from '../../errors'
+import { BadRequestError, ForbiddenError, GenericError, NotFoundError } from '../../errors'
+import memberRepositories from './repositories'
+import { role } from '../../enums/roleEnum'
 
 const validateCreateOnePayload = (req: Request, _res: Response, next: NextFunction): void => {
   const createOnePayloadSchema = z.object({
@@ -303,9 +305,42 @@ const validateUpdateOnePayload = (req: Request, _res: Response, next: NextFuncti
   next()
 }
 
+async function checkIfIsSameClientId (req: Request, _res: Response, next: NextFunction): Promise<void> {
+  if (parseInt(req.headers['request-user-role-id'] as string) === role.CLIENT_ADMIN) {
+    let clientId = req.body.clientId as string | undefined // Quando o id do cliente do associado está no corpo da requisição (create)
+
+    // Quando o id do cliente do associado NÃO está no corpo da requisição,
+    // e o id do associado está na URL (activate, update)
+    if (clientId === undefined) {
+      const member = await memberRepositories.findOneById(req.params.id)
+
+      if (member === null) throw new NotFoundError('Associado não encontrado.')
+
+      clientId = member.client.id
+    }
+
+    if (clientId !== req.headers['request-user-client-id'] as string) {
+      throw new ForbiddenError('Operação não permitida. Usuários Admin de Cliente somente podem criar associados para o mesmo Cliente.')
+    }
+  }
+
+  next()
+}
+
+async function checkIfIsSameMemberId (req: Request, _res: Response, next: NextFunction): Promise<void> {
+  const requestUserId = req.headers['request-user-id'] as string
+  const requestUserRoleId = parseInt(req.headers['request-user-role-id'] as string)
+
+  if (requestUserRoleId === role.MEMBER && requestUserId !== req.params.id) throw new ForbiddenError()
+
+  next()
+}
+
 export default {
   validateCreateManyPayload,
   validateCreateOnePayload,
   validatefindManyQueryParams,
-  validateUpdateOnePayload
+  validateUpdateOnePayload,
+  checkIfIsSameClientId,
+  checkIfIsSameMemberId
 }

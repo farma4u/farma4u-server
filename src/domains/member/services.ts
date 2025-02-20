@@ -12,10 +12,12 @@ import {
   type MemberToBeReturned,
   type MemberToBeUpdated
 } from './interfaces'
-import { type FindManyResponse } from '../../interfaces'
+import type { AccessTokenData, FindManyResponse } from '../../interfaces'
 import memberRepositories from './repositories'
 import { status } from '../../enums/statusEnum'
 import { prismaError } from '../../enums/prismaError'
+import { role } from '../../enums/roleEnum'
+import type { Prisma } from '@prisma/client'
 
 const createOne = async (memberToBeCreated: MemberToBeCreated): Promise<string> => {
   const INVALID_CLIENT = 'Cliente inválido.'
@@ -66,7 +68,10 @@ const createMany = async (clientId: string, fileBuffer: Buffer): Promise<void> =
     })
 }
 
-const findMany = async ({ skip, take, ...queryParams }: FindManyMembersQueryParams): Promise<FindManyResponse<MemberToBeReturnedOnFindMany>> => {
+const findMany = async (
+  accessTokenData: AccessTokenData,
+  { skip, take, ...queryParams }: FindManyMembersQueryParams
+): Promise<FindManyResponse<MemberToBeReturnedOnFindMany>> => {
   const MEMBERS_NOT_FOUND = 'Nenhum associado encontrado.'
   const CLIENT_NOT_FOUND = 'Cliente não encontrado.'
 
@@ -92,6 +97,8 @@ const findMany = async ({ skip, take, ...queryParams }: FindManyMembersQueryPara
     }
   })
 
+  if (accessTokenData.roleId === role.CLIENT_ADMIN) Object.assign(where, { clientId: accessTokenData.clientId })
+
   if (queryParams.clientCnpj !== undefined) {
     const client = await clientRepositories.findOneByCnpj(queryParams.clientCnpj)
 
@@ -109,10 +116,18 @@ const findMany = async ({ skip, take, ...queryParams }: FindManyMembersQueryPara
   return { items: members, totalCount }
 }
 
-const findOneById = async (id: string): Promise<MemberToBeReturned> => {
+const findOneById = async (
+  accessTokenData: AccessTokenData,
+  id: string
+): Promise<MemberToBeReturned> => {
   const MEMBER_NOT_FOUND = 'Associado não encontrado.'
 
-  const member = await memberRepositories.findOneById(id)
+  const where: Prisma.MemberWhereInput = {}
+
+  // Se for usuário de cliente, filtra associados pelo clientId
+  if (accessTokenData.roleId === role.CLIENT_ADMIN) Object.assign(where, { clientId: accessTokenData.clientId })
+
+  const member = await memberRepositories.findOneById(id, where)
 
   if (member === null) throw new NotFoundError(MEMBER_NOT_FOUND)
 

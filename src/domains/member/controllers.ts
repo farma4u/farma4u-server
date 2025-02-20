@@ -4,6 +4,7 @@ import { type Request, type Response } from 'express'
 import { type MemberToBeUpdated, type FindManyMembersQueryParams, type MemberToBeCreated } from './interfaces'
 import memberService from './services'
 import { BadRequestError } from '../../errors'
+import type { AccessTokenData } from '../../interfaces'
 
 const createOne = async (req: Request, res: Response): Promise<Response> => {
   const MEMBER_SUCCESSFULLY_CREATED = 'Associado cadastrado com sucesso.'
@@ -50,7 +51,13 @@ const findMany = async (req: Request, res: Response): Promise<Response> => {
     statusId: req.query['status-id'] !== undefined ? parseInt(req.query['status-id'] as string) : undefined
   }
 
-  const { items: members, totalCount } = await memberService.findMany(queryParams)
+  const accessTokenData: AccessTokenData = {
+    id: req.headers['request-user-id'] as string,
+    clientId: req.headers['request-user-client-id'] as string,
+    roleId: JSON.parse(req.headers['request-user-role-id'] as string)
+  }
+
+  const { items: members, totalCount } = await memberService.findMany(accessTokenData, queryParams)
 
   res.setHeader('x-total-count', totalCount.toString())
 
@@ -62,7 +69,13 @@ const findOneById = async (req: Request, res: Response): Promise<Response> => {
 
   const id = req.params.id
 
-  const member = await memberService.findOneById(id)
+  const accessTokenData: AccessTokenData = {
+    id: req.headers['request-user-id'] as string,
+    clientId: req.headers['request-user-client-id'] as string,
+    roleId: JSON.parse(req.headers['request-user-role-id'] as string)
+  }
+
+  const member = await memberService.findOneById(accessTokenData, id)
 
   return res.status(HttpStatusCode.Ok).json({ message: MEMBER_FOUND, member })
 }
