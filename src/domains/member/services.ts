@@ -133,6 +133,10 @@ const findOneById = async (
 
   const { password, createdPassword, updatedAt, ...memberToBeReturned } = member
 
+  if (accessTokenData.roleId === role.CLIENT_ADMIN) {
+    memberToBeReturned.orders = memberToBeReturned.orders.map(({ items, ...order }) => ({ items: [], ...order }))
+  }
+
   return memberToBeReturned
 }
 
