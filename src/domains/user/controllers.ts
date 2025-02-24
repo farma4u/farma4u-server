@@ -5,6 +5,7 @@ import { type Request, type Response } from 'express'
 import userServices from './services'
 import type { FindManyUsersQueryParams, UserToBeCreated, UserToBeUpdated } from './interfaces'
 import type { AccessTokenData } from '../../interfaces'
+import type { role } from '../../enums/roleEnum'
 
 const createOne = async (req: Request, res: Response): Promise<Response> => {
   const USER_SUCCESSFULLY_CREATED = 'Usuário cadastrado com sucesso.'
@@ -109,10 +110,22 @@ async function updateOne (req: Request, res: Response): Promise<Response> {
   return res.status(HttpStatusCode.Ok).json({ message: USER_SUCCESSFULLY_UPDATED, userId })
 }
 
+const getSystemData = async (req: Request, res: Response): Promise<Response> => {
+  const CLIENT_FOUND = 'Dados recuperados com sucesso.'
+
+  const requestUserRoleId = parseInt(req.headers['request-user-role-id'] as string) as role
+  const requestUserClientId = req.headers['request-user-client-id'] as string | null
+
+  const systemData = await userServices.getSystemData(requestUserRoleId, requestUserClientId)
+
+  return res.status(HttpStatusCode.Ok).json({ message: CLIENT_FOUND, systemData })
+}
+
 export default {
   activateOne,
   createOne,
   deleteOne,
+  getSystemData,
   findOneById,
   findMany,
   inactivateOne,

@@ -17,10 +17,11 @@ const count = async (where: Prisma.ClientWhereInput): Promise<number> => {
   }
 }
 
-const sumSystemSavings = async (): Promise<number | null> => {
+const sumSystemSavings = async (where?: Prisma.ClientWhereInput): Promise<number | null> => {
   try {
     const { _sum: { totalSavings: systemTotalSavings } } = await prismaClient.client.aggregate({
-      _sum: { totalSavings: true }
+      _sum: { totalSavings: true },
+      where
     })
 
     return systemTotalSavings

@@ -26,6 +26,14 @@ userRouter.post(
   userControllers.createOne
 )
 
+// Estatísticas do sistema
+userRouter.get(
+  '/meta',
+  verifyAccessToken,
+  checkIfIsMasterOrClient,
+  userControllers.getSystemData
+)
+
 // Detalhes de um usuário
 userRouter.get(
   '/:id',

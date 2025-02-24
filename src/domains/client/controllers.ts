@@ -2,7 +2,7 @@
 import { HttpStatusCode } from 'axios'
 import { type Request, type Response } from 'express'
 
-import { type FindManyClientsQueryParams, type ClientToBeCreated, type ClientToBeUpdated } from './interfaces'
+import type { FindManyClientsQueryParams, ClientToBeCreated, ClientToBeUpdated } from './interfaces'
 import clientService from './service'
 
 const createOne = async (req: Request, res: Response): Promise<Response> => {

@@ -78,9 +78,20 @@ const updateOne = async (id: string, data: Partial<Order>): Promise<Order> => {
   }
 }
 
+const count = async (where: Prisma.OrderWhereInput): Promise<number> => {
+  try {
+    const count = await prismaClient.order.count({ where })
+
+    return count
+  } catch (error) {
+    throw new DatabaseError(error)
+  }
+}
+
 export default {
   createManyItems,
   createOne,
+  count,
   findAnyById,
   updateOne
 }

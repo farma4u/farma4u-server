@@ -1,6 +1,14 @@
 import bcrypt from 'bcrypt'
 
-import type { FindManyUsersQueryParams, UserToBeReturnedInFindMany, UserToBeCreated, UserToBeUpdated } from './interfaces'
+import type {
+  FindManyUsersQueryParams,
+  UserToBeReturnedInFindMany,
+  UserToBeCreated,
+  UserToBeUpdated,
+  SystemData
+} from './interfaces'
+import clientRepositories from '../client/repositories'
+import orderRepositories from '../order/repositories'
 import userRepositories from './repositories'
 import { NotFoundError } from '../../errors'
 import { role } from '../../enums/roleEnum'
@@ -98,12 +106,28 @@ async function updateOne (userToBeUpdatedId: string, userToBeUpdated: UserToBeUp
   return userId
 }
 
+const getSystemData = async (requestUserRoleId: role, requestUserClientId: string | null): Promise<SystemData> => {
+  const clientWhere: Prisma.ClientWhereInput = {}
+  const orderWhere: Prisma.OrderWhereInput = {}
+
+  if (requestUserRoleId === role.CLIENT_ADMIN) {
+    Object.assign(clientWhere, { id: requestUserClientId })
+    Object.assign(orderWhere, { clientId: requestUserClientId })
+  }
+
+  const totalSavings = await clientRepositories.sumSystemSavings(clientWhere)
+  const totalOrderCount = await orderRepositories.count(orderWhere)
+
+  return { totalSavings: totalSavings ?? 0, totalOrderCount }
+}
+
 export default {
   activateOne,
   createOne,
   deleteOne,
   findOneById,
   findMany,
+  getSystemData,
   inactivateOne,
   updateOne
 }

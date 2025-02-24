@@ -1,4 +1,4 @@
-import type { Prisma, User } from '@prisma/client'
+import type { Client, Prisma, User } from '@prisma/client'
 import type { ClientMinData } from '../client/interfaces'
 import type { RoleMinData } from '../role/roleInterfaces'
 import type { StatusToBeReturned } from '../status/statusInterfaces'
@@ -36,3 +36,5 @@ export interface FindManyUsersParams {
 }
 
 export type UserToBeUpdated = Omit<UserToBeCreated, 'cpf' | 'password'>
+
+export interface SystemData { totalSavings: Client['totalSavings'], totalOrderCount: number }

@@ -436,4 +436,8 @@ const validateUpdateOnePayload = (req: Request, _res: Response, next: NextFuncti
   next()
 }
 
-export default { validateCreateOnePayload, validateFindManyQueryParams, validateUpdateOnePayload }
+export default {
+  validateCreateOnePayload,
+  validateFindManyQueryParams,
+  validateUpdateOnePayload
+}

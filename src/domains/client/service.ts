@@ -1,10 +1,10 @@
 import clientRepositories from './repositories'
-import {
-  type ClientToBeUpdated,
-  type ClientToBeCreated,
-  type ClientToBeReturned,
-  type FindManyClientsQueryParams,
-  type FindManyClientsWhere
+import type {
+  ClientToBeUpdated,
+  ClientToBeCreated,
+  ClientToBeReturned,
+  FindManyClientsQueryParams,
+  FindManyClientsWhere
 } from './interfaces'
 import memberRepositories from '../member/repositories'
 import { NotFoundError } from '../../errors'
@@ -42,9 +42,9 @@ const findMany = async ({ skip, take, ...queryParams }: FindManyClientsQueryPara
   if (clients.length === 0) throw new NotFoundError(CLIENTS_NOT_FOUND)
 
   const totalCount = await clientRepositories.count(where)
-  const systemTotalSavings = await clientRepositories.sumSystemSavings()
+  // const systemTotalSavings = await clientRepositories.sumSystemSavings()
 
-  return { items: clients, totalCount, systemTotalSavings: systemTotalSavings ?? 0 }
+  return { items: clients, totalCount, systemTotalSavings: 0 }
 }
 
 const findOneById = async (id: string): Promise<ClientToBeReturned> => {
