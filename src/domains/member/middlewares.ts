@@ -145,8 +145,8 @@ const validatefindManyQueryParams = (req: Request, _res: Response, next: NextFun
   const findManyQueryParamsSchema = z.object({
     clientCnpj: z
       .string({
-        invalid_type_error: 'O campo CNPJ do Cliente ("clientCnpj") deve ser uma string.',
-        required_error: 'O campo CNPJ do Cliente ("clientCnpj") é obrigatório.'
+        invalid_type_error: 'O campo CNPJ do Cliente ("client-cnpj") deve ser uma string.',
+        required_error: 'O campo CNPJ do Cliente ("client-cnpj") é obrigatório.'
       })
       .optional(),
 
@@ -190,14 +190,21 @@ const validatefindManyQueryParams = (req: Request, _res: Response, next: NextFun
 
     statusId: z
       .number({
-        invalid_type_error: 'O campo Status ("statusId") deve ser um number.',
-        required_error: 'O campo Status ("statusId") é obrigatório.'
+        invalid_type_error: 'O campo Status ("status-id") deve ser um number.',
+        required_error: 'O campo Status ("status-id") é obrigatório.'
       })
       .gte(1, {
-        message: 'O campo Status ("statusId") deve 1 (ativo), 2 (inativo), 3 (excluído) ou 4 (inadimplente).'
+        message: 'O campo Status ("status-id") deve 1 (ativo), 2 (inativo), 3 (excluído) ou 4 (inadimplente).'
       })
       .lte(4, {
-        message: 'O campo Status ("statusId") deve 1 (ativo), 2 (inativo), 3 (excluído) ou 4 (inadimplente).'
+        message: 'O campo Status ("status-id") deve 1 (ativo), 2 (inativo), 3 (excluído) ou 4 (inadimplente).'
+      })
+      .optional(),
+
+    orderBy: z
+      .string({
+        invalid_type_error: 'O campo Ordenado por ("order-by") deve ser uma string.',
+        required_error: 'O campo Ordenado por ("order-by") é obrigatório.'
       })
       .optional()
   })
@@ -209,7 +216,8 @@ const validatefindManyQueryParams = (req: Request, _res: Response, next: NextFun
       take: typeof req.query.take === 'string' ? parseInt(req.query.take) : undefined,
       name: req.query.name,
       skip: typeof req.query.skip === 'string' ? parseInt(req.query.skip) : undefined,
-      statusId: typeof req.query['status-id'] === 'string' ? parseInt(req.query['status-id']) : undefined
+      statusId: typeof req.query['status-id'] === 'string' ? parseInt(req.query['status-id']) : undefined,
+      orderBy: req.query['order-by']
     })
   } catch (error) {
     if (error instanceof z.ZodError) {

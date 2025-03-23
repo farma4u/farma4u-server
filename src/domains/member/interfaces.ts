@@ -8,7 +8,10 @@ export interface FindManyMembersQueryParams {
   name?: string
   skip: number
   statusId?: number | typeof NaN
+  orderBy?: keyof Member
 }
+
+export type FindManyMembersOrderBy = Partial<Record<keyof Member, 'desc'>>
 
 export type FindManyMembersWhere = Pick<Prisma.MemberWhereInput, 'cpf' | 'clientId' | 'name' | 'statusId'>
 

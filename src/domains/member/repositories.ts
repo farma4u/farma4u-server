@@ -7,7 +7,8 @@ import type {
   MemberToBeReturnedOnFindMany,
   FindManyMembersWhere,
   MemberToBeCreated,
-  MemberWithClientData
+  MemberWithClientData,
+  FindManyMembersOrderBy
 } from './interfaces'
 import { prismaError } from '../../enums/prismaError'
 import { status } from '../../enums/statusEnum'
@@ -59,6 +60,7 @@ const createOneForBulkCreation = async (memberToBeCreated: MemberToBeCreated): P
 const findMany = async (
   skip: number,
   take: number,
+  orderBy: FindManyMembersOrderBy,
   where: Partial<FindManyMembersWhere>
 ): Promise<MemberToBeReturnedOnFindMany[]> => {
   try {
@@ -84,7 +86,7 @@ const findMany = async (
         statusId: true,
         createdAt: true
       },
-      orderBy: { createdAt: 'desc' }
+      orderBy
     })
 
     return members

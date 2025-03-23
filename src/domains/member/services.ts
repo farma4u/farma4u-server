@@ -4,13 +4,14 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 import { BadRequestError, NotFoundError } from '../../errors'
 import clientRepositories from '../client/repositories'
 import { convertBufferToStream } from '../../utils/convertBufferToStream'
-import {
-  type MemberToBeReturnedOnFindMany,
-  type FindManyMembersQueryParams,
-  type FindManyMembersWhere,
-  type MemberToBeCreated,
-  type MemberToBeReturned,
-  type MemberToBeUpdated
+import type {
+  MemberToBeReturnedOnFindMany,
+  FindManyMembersQueryParams,
+  FindManyMembersWhere,
+  MemberToBeCreated,
+  MemberToBeReturned,
+  MemberToBeUpdated,
+  FindManyMembersOrderBy
 } from './interfaces'
 import type { AccessTokenData, FindManyResponse } from '../../interfaces'
 import memberRepositories from './repositories'
@@ -70,7 +71,7 @@ const createMany = async (clientId: string, fileBuffer: Buffer): Promise<void> =
 
 const findMany = async (
   accessTokenData: AccessTokenData,
-  { skip, take, ...queryParams }: FindManyMembersQueryParams
+  { skip, take, orderBy, ...queryParams }: FindManyMembersQueryParams
 ): Promise<FindManyResponse<MemberToBeReturnedOnFindMany>> => {
   const MEMBERS_NOT_FOUND = 'Nenhum associado encontrado.'
   const CLIENT_NOT_FOUND = 'Cliente não encontrado.'
@@ -97,6 +98,8 @@ const findMany = async (
     }
   })
 
+  const orderByQuery: FindManyMembersOrderBy = orderBy !== undefined ? { [orderBy]: 'desc' } : { totalSavings: 'desc' }
+
   if (accessTokenData.roleId === role.CLIENT_ADMIN) Object.assign(where, { clientId: accessTokenData.clientId })
 
   if (queryParams.clientCnpj !== undefined) {
@@ -107,7 +110,7 @@ const findMany = async (
     Object.assign(where, { clientId: { contains: client.id } })
   }
 
-  const members = await memberRepositories.findMany(skip, take, where)
+  const members = await memberRepositories.findMany(skip, take, orderByQuery, where)
 
   if (members.length === 0) throw new NotFoundError(MEMBERS_NOT_FOUND)
 

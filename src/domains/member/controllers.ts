@@ -5,6 +5,7 @@ import { type MemberToBeUpdated, type FindManyMembersQueryParams, type MemberToB
 import memberService from './services'
 import { BadRequestError } from '../../errors'
 import type { AccessTokenData } from '../../interfaces'
+import type { Member } from '@prisma/client'
 
 const createOne = async (req: Request, res: Response): Promise<Response> => {
   const MEMBER_SUCCESSFULLY_CREATED = 'Associado cadastrado com sucesso.'
@@ -48,7 +49,8 @@ const findMany = async (req: Request, res: Response): Promise<Response> => {
     clientCnpj: req.query['client-cnpj'] as string | undefined,
     cpf: req.query.cpf as string | undefined,
     name: req.query.name as string | undefined,
-    statusId: req.query['status-id'] !== undefined ? parseInt(req.query['status-id'] as string) : undefined
+    statusId: req.query['status-id'] !== undefined ? parseInt(req.query['status-id'] as string) : undefined,
+    orderBy: req.query['order-by'] as keyof Member | undefined
   }
 
   const accessTokenData: AccessTokenData = {
