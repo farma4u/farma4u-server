@@ -63,6 +63,8 @@ const findMany = async (
   orderBy: FindManyMembersOrderBy,
   where: Partial<FindManyMembersWhere>
 ): Promise<MemberToBeReturnedOnFindMany[]> => {
+  logger.debug({ skip, take, orderBy, where })
+
   try {
     const members = await prismaClient.member.findMany({
       where,

@@ -7,7 +7,6 @@ import { convertBufferToStream } from '../../utils/convertBufferToStream'
 import type {
   MemberToBeReturnedOnFindMany,
   FindManyMembersQueryParams,
-  FindManyMembersWhere,
   MemberToBeCreated,
   MemberToBeReturned,
   MemberToBeUpdated,
@@ -74,22 +73,16 @@ const findMany = async (
   { skip, take, orderBy, ...queryParams }: FindManyMembersQueryParams
 ): Promise<FindManyResponse<MemberToBeReturnedOnFindMany>> => {
   const MEMBERS_NOT_FOUND = 'Nenhum associado encontrado.'
-  const CLIENT_NOT_FOUND = 'Cliente não encontrado.'
 
-  const where: Partial<FindManyMembersWhere> = {}
+  const where: Prisma.MemberWhereInput = { OR: [] }
 
   Object.entries(queryParams).forEach(([key, value]) => {
-    if (
-      value !== undefined &&
-        value !== null &&
-        key !== 'clientCnpj'
-    ) {
+    if (value !== undefined && value !== null) {
       switch (key) {
-        case 'cpf':
-          Object.assign(where, { cpf: { contains: value } })
-          break
-        case 'name':
-          Object.assign(where, { name: { contains: value } })
+        case 'searchInput':
+          where.OR?.push({ cpf: { contains: value as string } })
+          where.OR?.push({ name: { contains: value as string } })
+          where.OR?.push({ client: { cnpj: { contains: value as string } } })
           break
         default:
           Object.assign(where, { [key]: value })
@@ -98,17 +91,11 @@ const findMany = async (
     }
   })
 
+  if (where.OR?.length === 0) delete where.OR
+
   const orderByQuery: FindManyMembersOrderBy = orderBy !== undefined ? { [orderBy]: 'desc' } : { totalSavings: 'desc' }
 
   if (accessTokenData.roleId === role.CLIENT_ADMIN) Object.assign(where, { clientId: accessTokenData.clientId })
-
-  if (queryParams.clientCnpj !== undefined) {
-    const client = await clientRepositories.findOneByCnpj(queryParams.clientCnpj)
-
-    if (client === null) throw new BadRequestError(CLIENT_NOT_FOUND)
-
-    Object.assign(where, { clientId: { contains: client.id } })
-  }
 
   const members = await memberRepositories.findMany(skip, take, orderByQuery, where)
 

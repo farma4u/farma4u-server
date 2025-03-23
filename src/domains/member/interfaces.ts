@@ -2,10 +2,8 @@ import { type Prisma, type Item, type Member, type Order } from '@prisma/client'
 import type { ClientMinData } from '../client/interfaces'
 
 export interface FindManyMembersQueryParams {
-  clientCnpj?: string
-  cpf?: string
+  searchInput?: string
   take: number
-  name?: string
   skip: number
   statusId?: number | typeof NaN
   orderBy?: keyof Member

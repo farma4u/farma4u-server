@@ -44,11 +44,9 @@ const findMany = async (req: Request, res: Response): Promise<Response> => {
   const MEMBERS_FOUND = 'Associados recuperados com sucesso.'
 
   const queryParams: FindManyMembersQueryParams = {
+    searchInput: req.query['search-input'] as string | undefined,
     take: parseInt(req.query.take as string),
     skip: parseInt(req.query.skip as string),
-    clientCnpj: req.query['client-cnpj'] as string | undefined,
-    cpf: req.query.cpf as string | undefined,
-    name: req.query.name as string | undefined,
     statusId: req.query['status-id'] !== undefined ? parseInt(req.query['status-id'] as string) : undefined,
     orderBy: req.query['order-by'] as keyof Member | undefined
   }
