@@ -18,11 +18,11 @@ const transporter = nodemailer.createTransport({
   secure: true
 })
 
-const sendEmail = async (subject: string, text: string, to: string): Promise<SentMessageInfo> => {
+const sendEmail = async (subject: string, html: string, to: string): Promise<SentMessageInfo> => {
   const sentMessageInfo = await transporter.sendMail({
     from: MAILER_USER,
     subject,
-    text,
+    html,
     to
   })
 

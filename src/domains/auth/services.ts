@@ -78,10 +78,32 @@ async function generateResetPasswordCode (userId: string): Promise<string> {
 }
 
 async function sendResetPasswordCode (email: string, resetPasswordCode: string, name: string): Promise<void> {
-  const SUBJECT = 'Farma4u - Redefina sua senha!'
-  const BODY = `Olá, ${name}! Seu código de acesso é: ${resetPasswordCode}. Utilize-o para redefinir sua senha.`
+  const SUBJECT = 'Farma - Redefina sua senha!'
+  // const BODY = `Olá, ${name}! Seu código de acesso é: ${resetPasswordCode}. Utilize-o para redefinir sua senha.`
+  const BODY_HTML = `<!DOCTYPE html>
+  <html lang="pt-br">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redefinição de senha</title>
+  </head>
+  <body style="font-family: Arial, sans-serif; margin: 0; padding: 0;">
+    <header style="background-color: #5CC9FA; padding: 4px 0; border-radius: 0 0 15px 15px;min-height: 75px;display: flex;align-items: center;justify-content: center;">
+      <h1 style="text-align: center; color: white; font-size: x-large;font-weight: normal;">Olá, <strong>${name}</strong>!</h1>
+    </header>
+    <main style="padding: 1rem 1.5rem;text-align: center;">
+      <p>Para redefinir a sua senha, insira o seguinte código na plataforma:</p>
+      <div style="width: 70%;margin: 2rem auto;background-color: #f0f0f0;border-radius: 15px;padding: 1rem;">
+        <h2 style="text-align: center; color: #EA6AD1; font-size: x-large;">${resetPasswordCode}</h2>
+      </div>
+    </main>
+    <footer style="padding: 1rem 1.5rem;border-top: 1px solid #EA6AD1;text-align: center;">
+      <p>Se você não solicitou esta redefinição de senha, por favor, ignore este e-mail.</p>
+    </footer>
+  </body>
+  </html>`
 
-  const mailSent = await sendEmail(SUBJECT, BODY, email)
+  const mailSent = await sendEmail(SUBJECT, BODY_HTML, email)
 
   logger.debug(mailSent, 'Resposta do envio do email.')
 }
@@ -177,10 +199,32 @@ const generateFirstAccessCode = async (memberId: string): Promise<string> => {
 }
 
 const sendFirstAccessCode = async (email: string, firstAccessCode: string, name: string): Promise<void> => {
-  const SUBJECT = 'Farma4u - Crie sua senha de acesso!'
-  const BODY = `Olá, ${name}! Seu código de acesso é: ${firstAccessCode}. Utilize-o para redefinir sua senha.`
+  const SUBJECT = 'Farma - Crie sua senha de acesso!'
+  // const BODY = `Olá, ${name}! Seu código de acesso é: ${firstAccessCode}. Utilize-o para redefinir sua senha.`
+  const BODY_HTML = `<!DOCTYPE html>
+  <html lang="pt-br">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criação de senha</title>
+  </head>
+  <body style="font-family: Arial, sans-serif; margin: 0; padding: 0;">
+    <header style="background-color: #5CC9FA; padding: 4px 0; border-radius: 0 0 15px 15px;min-height: 75px;display: flex;align-items: center;justify-content: center;">
+      <h1 style="text-align: center; color: white; font-size: x-large;font-weight: normal;">Olá, <strong>${name}</strong>!</h1>
+    </header>
+    <main style="padding: 1rem 1.5rem;text-align: center;">
+      <p>Para finalizar o seu cadastro, insira o seguinte código na plataforma:</p>
+      <div style="width: 70%;margin: 2rem auto;background-color: #f0f0f0;border-radius: 15px;padding: 1rem;">
+        <h2 style="text-align: center; color: #EA6AD1; font-size: x-large;">${firstAccessCode}</h2>
+      </div>
+    </main>
+    <footer style="padding: 1rem 1.5rem;border-top: 1px solid #EA6AD1;text-align: center;">
+      <p>Se você não solicitou este cadastro, por favor, ignore este e-mail.</p>
+    </footer>
+  </body>
+  </html>`
 
-  const mailSent = await sendEmail(SUBJECT, BODY, email)
+  const mailSent = await sendEmail(SUBJECT, BODY_HTML, email)
 
   logger.debug(mailSent, 'Resposta do envio do email.')
 }
