@@ -175,6 +175,32 @@ const subtractFromSavings = async (id: string, savingsToSubtract: number): Promi
   }
 }
 
+const sumRevenue = async (): Promise<number> => {
+  try {
+    const { _sum: { lumpSum } } = await prismaClient.client.aggregate({
+      _sum: { lumpSum: true },
+      where: { statusId: status.ACTIVE }
+    })
+
+    return lumpSum ?? 0
+  } catch (error) {
+    throw new DatabaseError(error)
+  }
+}
+
+const sumDefaulting = async (): Promise<number> => {
+  try {
+    const { _sum: { lumpSum } } = await prismaClient.client.aggregate({
+      _sum: { lumpSum: true },
+      where: { statusId: status.DEFAULTING }
+    })
+
+    return lumpSum ?? 0
+  } catch (error) {
+    throw new DatabaseError(error)
+  }
+}
+
 export default {
   addToSavings,
   count,
@@ -183,6 +209,8 @@ export default {
   findOneByCnpj,
   findOneById,
   subtractFromSavings,
+  sumDefaulting,
+  sumRevenue,
   sumSystemSavings,
   updateOne
 }

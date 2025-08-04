@@ -15,4 +15,6 @@ export interface FindManyClientsQueryParams {
 
 export type FindManyClientsWhere = Pick<Prisma.ClientWhereInput, 'cnpj' | 'fantasyName' | 'statusId'>
 
+export type CountClientsWhere = Pick<Prisma.ClientWhereInput, 'id' | 'statusId'>
+
 export type ClientMinData = Pick<Client, 'id' | 'fantasyName'>
