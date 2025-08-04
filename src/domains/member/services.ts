@@ -93,7 +93,7 @@ const findMany = async (
 
   if (where.OR?.length === 0) delete where.OR
 
-  const orderByQuery: FindManyMembersOrderBy = orderBy !== undefined ? { [orderBy]: 'desc' } : { totalSavings: 'desc' }
+  const orderByQuery: FindManyMembersOrderBy = (orderBy !== undefined && orderBy !== '') ? { [orderBy]: 'desc' } : { totalSavings: 'desc' }
 
   if (accessTokenData.roleId === role.CLIENT_ADMIN) Object.assign(where, { clientId: accessTokenData.clientId })
 

@@ -190,10 +190,10 @@ const validateCreateOnePayload = (req: Request, _res: Response, next: NextFuncti
 
 const validateFindManyQueryParams = (req: Request, _res: Response, next: NextFunction): void => {
   const findManyQueryParamsSchema = z.object({
-    cnpj: z
+    searchInput: z
       .string({
-        invalid_type_error: 'O campo CNPJ ("cnpj") deve ser uma string.',
-        required_error: 'O campo CNPJ ("cnpj") é obrigatório.'
+        invalid_type_error: 'O campo Busca ("searchInput") deve ser uma string.',
+        required_error: 'O campo Busca ("searchInput") é obrigatório.'
       })
       .optional(),
 
@@ -207,16 +207,6 @@ const validateFindManyQueryParams = (req: Request, _res: Response, next: NextFun
       })
       .lte(1000, {
         message: 'O campo Quantidade de Registros ("take") deve ser menor ou igual a 1000.'
-      })
-      .optional(),
-
-    fantasyName: z
-      .string({
-        invalid_type_error: 'O campo Nome Fantasia ("fantasyName") deve ser uma string.',
-        required_error: 'O campo Nome Fantasia ("fantasyName") é obrigatório.'
-      })
-      .min(3, {
-        message: 'O campo Nome Fantasia ("fantasyName") deve ter pelo menos 3 caracteres.'
       })
       .optional(),
 
@@ -236,21 +226,28 @@ const validateFindManyQueryParams = (req: Request, _res: Response, next: NextFun
         required_error: 'O campo Status ("statusId") é obrigatório.'
       })
       .gte(1, {
-        message: 'O campo Status ("statusId") deve 1 (ativo), 2 (inativo) ou 3 (excluído).'
+        message: 'O campo Status ("statusId") deve 1 (ativo), 2 (inativo), 3 (excluído) ou 4 (inadimplente).'
       })
       .lte(4, {
         message: 'O campo Status ("statusId") deve 1 (ativo), 2 (inativo), 3 (excluído) ou 4 (inadimplente).'
+      })
+      .optional(),
+
+    orderBy: z
+      .string({
+        invalid_type_error: 'O campo Ordenado por ("order-by") deve ser uma string.',
+        required_error: 'O campo Ordenado por ("order-by") é obrigatório.'
       })
       .optional()
   })
 
   try {
     findManyQueryParamsSchema.parse({
-      cnpj: req.query.cnpj,
-      take: typeof req.query.take === 'string' ? parseInt(req.query.take) : undefined,
-      fantasyName: req.query['fantasy-name'],
+      orderBy: req.query['order-by'],
+      searchInput: req.query['search-input'],
       skip: typeof req.query.skip === 'string' ? parseInt(req.query.skip) : undefined,
-      statusId: typeof req.query['status-id'] === 'string' ? parseInt(req.query['status-id']) : undefined
+      statusId: typeof req.query['status-id'] === 'string' ? parseInt(req.query['status-id']) : undefined,
+      take: typeof req.query.take === 'string' ? parseInt(req.query.take) : undefined
     })
   } catch (error) {
     if (error instanceof z.ZodError) {

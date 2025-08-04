@@ -1,14 +1,16 @@
+import type { Prisma } from '@prisma/client'
+
 import clientRepositories from './repositories'
 import type {
   ClientToBeUpdated,
   ClientToBeCreated,
   ClientToBeReturned,
   FindManyClientsQueryParams,
-  FindManyClientsWhere
+  FindManyClientsOrderBy
 } from './interfaces'
 import memberRepositories from '../member/repositories'
 import { NotFoundError } from '../../errors'
-import { type FindManyResponse } from '../../interfaces'
+import type { FindManyResponse } from '../../interfaces'
 
 const createOne = async (clientToBeCreated: ClientToBeCreated): Promise<string> => {
   const { id } = await clientRepositories.createOne(clientToBeCreated)
@@ -16,19 +18,20 @@ const createOne = async (clientToBeCreated: ClientToBeCreated): Promise<string> 
   return id
 }
 
-const findMany = async ({ skip, take, ...queryParams }: FindManyClientsQueryParams): Promise<FindManyResponse<ClientToBeReturned> & { systemTotalSavings: number }> => {
+async function findMany (
+  { skip, take, orderBy, ...queryParams }: FindManyClientsQueryParams
+): Promise<FindManyResponse<ClientToBeReturned>> {
   const CLIENTS_NOT_FOUND = 'Nenhum cliente encontrado.'
 
-  const where: FindManyClientsWhere = {}
+  const where: Prisma.ClientWhereInput = { OR: [] }
 
   Object.entries(queryParams).forEach(([key, value]) => {
     if (value !== undefined && value !== null) {
       switch (key) {
-        case 'cnpj':
-          Object.assign(where, { cnpj: { contains: value } })
-          break
-        case 'fantasyName':
-          Object.assign(where, { fantasyName: { contains: value } })
+        case 'searchInput':
+          where.OR?.push({ cnpj: { contains: value as string } })
+          where.OR?.push({ fantasyName: { contains: value as string } })
+          where.OR?.push({ corporateName: { contains: value as string } })
           break
         default:
           Object.assign(where, { [key]: value })
@@ -37,14 +40,29 @@ const findMany = async ({ skip, take, ...queryParams }: FindManyClientsQueryPara
     }
   })
 
-  const clients = await clientRepositories.findMany(where, skip, take)
+  if (where.OR?.length === 0) delete where.OR
+
+  let orderByQuery: FindManyClientsOrderBy
+
+  switch (true) {
+    case (orderBy === 'membersCount'):
+      orderByQuery = { members: { _count: 'desc' } }
+      break
+    case (orderBy !== undefined && orderBy !== ''):
+      orderByQuery = { [orderBy]: 'desc' }
+      break
+    default:
+      orderByQuery = { totalSavings: 'desc' }
+      break
+  }
+
+  const clients = await clientRepositories.findMany({ where, skip, take, orderByQuery })
 
   if (clients.length === 0) throw new NotFoundError(CLIENTS_NOT_FOUND)
 
   const totalCount = await clientRepositories.count(where)
-  // const systemTotalSavings = await clientRepositories.sumSystemSavings()
 
-  return { items: clients, totalCount, systemTotalSavings: 0 }
+  return { items: clients, totalCount }
 }
 
 const findOneById = async (id: string): Promise<ClientToBeReturned> => {

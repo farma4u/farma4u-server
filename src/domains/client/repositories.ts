@@ -1,8 +1,8 @@
-import { type Client, type Prisma } from '@prisma/client'
+import type { Client, Prisma } from '@prisma/client'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 
 import { BadRequestError, DatabaseError, NotFoundError } from '../../errors'
-import { type ClientToBeCreated, type ClientToBeReturned, type FindManyClientsWhere } from './interfaces'
+import type { FindManyClientsParams, ClientToBeCreated, ClientToBeReturned } from './interfaces'
 import prismaClient from '../../database/connection'
 import { prismaError } from '../../enums/prismaError'
 import { status } from '../../enums/statusEnum'
@@ -52,11 +52,7 @@ const createOne = async (clientToBeCreated: ClientToBeCreated): Promise<Pick<Cli
   }
 }
 
-const findMany = async (
-  where: Partial<FindManyClientsWhere>,
-  skip?: number,
-  take?: number
-): Promise<ClientToBeReturned[]> => {
+async function findMany ({ skip, take, where, orderByQuery: orderBy }: FindManyClientsParams): Promise<ClientToBeReturned[]> {
   try {
     const clients = await prismaClient.client.findMany({
       where,
@@ -82,9 +78,12 @@ const findMany = async (
         isHinova: true,
         hinovaToken: true,
         statusId: true,
-        createdAt: true
+        createdAt: true,
+        _count: {
+          select: { members: true }
+        }
       },
-      orderBy: { createdAt: 'desc' }
+      orderBy
     })
 
     return clients

@@ -6,7 +6,7 @@ export interface FindManyMembersQueryParams {
   take: number
   skip: number
   statusId?: number | typeof NaN
-  orderBy?: keyof Member
+  orderBy?: keyof Member | ''
 }
 
 export type FindManyMembersOrderBy = Partial<Record<keyof Member, 'desc'>>
