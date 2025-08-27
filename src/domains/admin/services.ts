@@ -36,8 +36,8 @@ const getRevenue = async (requestUserRoleId: role, requestUserClientId: string |
     Object.assign(where, { id: requestUserClientId })
   }
 
-  const revenue = await clientRepositories.count({ ...where, statusId: status.ACTIVE })
-  const defaulting = await clientRepositories.count({ ...where, statusId: status.DEFAULTING })
+  const revenue = await clientRepositories.sumRevenue(where)
+  const defaulting = await clientRepositories.sumDefaulting(where)
 
   return {
     revenue,

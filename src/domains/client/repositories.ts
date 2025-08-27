@@ -174,11 +174,11 @@ const subtractFromSavings = async (id: string, savingsToSubtract: number): Promi
   }
 }
 
-const sumRevenue = async (): Promise<number> => {
+const sumRevenue = async (where: Pick<Prisma.ClientWhereInput, 'id'>): Promise<number> => {
   try {
     const { _sum: { lumpSum } } = await prismaClient.client.aggregate({
       _sum: { lumpSum: true },
-      where: { statusId: status.ACTIVE }
+      where: { statusId: status.ACTIVE, ...where }
     })
 
     return lumpSum ?? 0
@@ -187,11 +187,11 @@ const sumRevenue = async (): Promise<number> => {
   }
 }
 
-const sumDefaulting = async (): Promise<number> => {
+const sumDefaulting = async (where: Pick<Prisma.ClientWhereInput, 'id'>): Promise<number> => {
   try {
     const { _sum: { lumpSum } } = await prismaClient.client.aggregate({
       _sum: { lumpSum: true },
-      where: { statusId: status.DEFAULTING }
+      where: { statusId: status.DEFAULTING, ...where }
     })
 
     return lumpSum ?? 0
