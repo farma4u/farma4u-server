@@ -9,7 +9,7 @@ const adminRouter: Router = Router()
 
 // Recuperar quantidade de clientes
 adminRouter.get(
-  '/admin/client/count',
+  '/client/count',
   verifyAccessToken,
   checkIfIsMaster,
   adminControllers.countClients
@@ -17,7 +17,7 @@ adminRouter.get(
 
 // Recuperar faturamento e inadimplência
 adminRouter.get(
-  '/admin/revenue',
+  '/revenue',
   verifyAccessToken,
   checkIfIsMaster,
   adminControllers.getRevenue
