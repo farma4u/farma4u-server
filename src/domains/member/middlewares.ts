@@ -1,7 +1,7 @@
 import { type NextFunction, type Request, type Response } from 'express'
 import { z } from 'zod'
 
-import { BadRequestError, ForbiddenError, GenericError, NotFoundError } from '../../errors'
+import { BadRequestError, ForbiddenError, GenericError, NotFoundError, UnauthorizedError } from '../../errors'
 import memberRepositories from './repositories'
 import { role } from '../../enums/roleEnum'
 
@@ -325,11 +325,33 @@ async function checkIfIsSameMemberId (req: Request, _res: Response, next: NextFu
   next()
 }
 
+const validateMemberCpfToken = (req: Request, _res: Response, next: NextFunction): void => {
+  const INVALID_TOKEN = 'Token de acesso inválido para consulta de associado por CPF.'
+
+  const requestTokenHeader = req.headers['x-member-cpf-token']
+  const expectedToken = process.env.MEMBER_CPF_TOKEN ?? ''
+
+  if (expectedToken.length === 0) {
+    throw new UnauthorizedError(INVALID_TOKEN)
+  }
+
+  if (typeof requestTokenHeader !== 'string' || requestTokenHeader.length === 0) {
+    throw new UnauthorizedError(INVALID_TOKEN)
+  }
+
+  if (requestTokenHeader !== expectedToken) {
+    throw new UnauthorizedError(INVALID_TOKEN)
+  }
+
+  next()
+}
+
 export default {
   validateCreateManyPayload,
   validateCreateOnePayload,
   validatefindManyQueryParams,
   validateUpdateOnePayload,
   checkIfIsSameClientId,
-  checkIfIsSameMemberId
+  checkIfIsSameMemberId,
+  validateMemberCpfToken
 }

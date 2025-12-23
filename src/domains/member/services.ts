@@ -10,7 +10,8 @@ import type {
   MemberToBeCreated,
   MemberToBeReturned,
   MemberToBeUpdated,
-  FindManyMembersOrderBy
+  FindManyMembersOrderBy,
+  MemberWithClientData
 } from './interfaces'
 import type { AccessTokenData, FindManyResponse } from '../../interfaces'
 import memberRepositories from './repositories'
@@ -130,6 +131,16 @@ const findOneById = async (
   return memberToBeReturned
 }
 
+const findOneByCpf = async (cpf: string): Promise<MemberWithClientData> => {
+  const MEMBER_NOT_FOUND = 'Associado não encontrado.'
+
+  const member = await memberRepositories.findOneByCpf(cpf)
+
+  if (member === null) throw new NotFoundError(MEMBER_NOT_FOUND)
+
+  return member
+}
+
 const activateOne = async (id: string): Promise<void> => {
   await memberRepositories.updateOne(id, { statusId: 1 })
 }
@@ -153,6 +164,7 @@ export default {
   deleteOne,
   findMany,
   findOneById,
+  findOneByCpf,
   inactivateOne,
   updateOne
 }

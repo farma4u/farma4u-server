@@ -80,6 +80,16 @@ const findOneById = async (req: Request, res: Response): Promise<Response> => {
   return res.status(HttpStatusCode.Ok).json({ message: MEMBER_FOUND, member })
 }
 
+const findOneByCpf = async (req: Request, res: Response): Promise<Response> => {
+  const MEMBER_FOUND = 'Associado recuperado com sucesso.'
+
+  const { cpf } = req.params
+
+  const member = await memberService.findOneByCpf(cpf)
+
+  return res.status(HttpStatusCode.Ok).json({ message: MEMBER_FOUND, member })
+}
+
 const activateOne = async (req: Request, res: Response): Promise<Response> => {
   const MEMBER_SUCCESSFULLY_ACTIVATED = 'Associado ativado com sucesso.'
 
@@ -135,6 +145,7 @@ export default {
   deleteOne,
   findMany,
   findOneById,
+  findOneByCpf,
   inactivateOne,
   updateOne
 }

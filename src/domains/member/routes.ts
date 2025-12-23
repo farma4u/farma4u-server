@@ -32,6 +32,13 @@ memberRouter.post(
   memberController.createMany
 )
 
+// Buscar associado por CPF
+memberRouter.get(
+  '/by-cpf/:cpf',
+  memberMiddlewares.validateMemberCpfToken,
+  memberController.findOneByCpf
+)
+
 // Detalhes de um associado
 memberRouter.get(
   '/:id',
