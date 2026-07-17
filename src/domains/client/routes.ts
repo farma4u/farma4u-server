@@ -18,15 +18,6 @@ clientRouter.post(
   clientController.createOne
 )
 
-// Detalhes de um cliente
-clientRouter.get(
-  '/:id',
-  verifyAccessToken,
-  checkIfIsMaster,
-  validateUuidParam,
-  clientController.findOneById
-)
-
 // Listar clientes
 clientRouter.get(
   '/',
@@ -34,6 +25,15 @@ clientRouter.get(
   checkIfIsMaster,
   clientMiddlewares.validateFindManyQueryParams,
   clientController.findMany
+)
+
+// Detalhes de um cliente
+clientRouter.get(
+  '/:id',
+  verifyAccessToken,
+  checkIfIsMaster,
+  validateUuidParam,
+  clientController.findOneById
 )
 
 // Ativar cliente

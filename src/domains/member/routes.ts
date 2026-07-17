@@ -39,6 +39,15 @@ memberRouter.get(
   memberController.findOneByCpf
 )
 
+// Listar associados
+memberRouter.get(
+  '/',
+  verifyAccessToken,
+  checkIfIsMasterOrClient,
+  memberMiddlewares.validatefindManyQueryParams,
+  memberController.findMany
+)
+
 // Detalhes de um associado
 memberRouter.get(
   '/:id',
@@ -47,15 +56,6 @@ memberRouter.get(
   validateUuidParam,
   memberMiddlewares.checkIfIsSameMemberId,
   memberController.findOneById
-)
-
-// Listar associados
-memberRouter.get(
-  '/',
-  verifyAccessToken,
-  checkIfIsMasterOrClient,
-  memberMiddlewares.validatefindManyQueryParams,
-  memberController.findMany
 )
 
 // Ativar associado
