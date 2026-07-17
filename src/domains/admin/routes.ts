@@ -23,4 +23,20 @@ adminRouter.get(
   adminControllers.getRevenue
 )
 
+// Recuperar cobranças mensais
+adminRouter.get(
+  '/billing',
+  verifyAccessToken,
+  checkIfIsMaster,
+  adminControllers.getMonthlyBillings
+)
+
+// Atualizar status de uma cobrança mensal
+adminRouter.patch(
+  '/billing/:id/status',
+  verifyAccessToken,
+  checkIfIsMaster,
+  adminControllers.updateBillingStatus
+)
+
 export { adminRouter }

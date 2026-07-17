@@ -73,6 +73,7 @@ async function findMany ({ skip, take, where, orderByQuery: orderBy }: FindManyC
         financePhoneNumber: true,
         lumpSum: true,
         unitValue: true,
+        dueDay: true,
         totalSavings: true,
         contractUrl: true,
         isHinova: true,

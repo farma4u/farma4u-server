@@ -19,15 +19,35 @@ const countClients = async (req: Request, res: Response): Promise<Response> => {
 const getRevenue = async (req: Request, res: Response): Promise<Response> => {
   const REVENUE_AND_DELINQUENCY_FOUND = 'Dados financeiros recuperados com sucesso.'
 
-  const requestAdminRoleId = parseInt(req.headers['request-admin-role-id'] as string) as role
-  const requestAdminClientId = req.headers['request-admin-client-id'] as string | null
+  const requestUserRoleId = parseInt(req.headers['request-user-role-id'] as string) as role
+  const requestUserClientId = req.headers['request-user-client-id'] as string | null
 
   const revenueAndDelinquencyData = await adminServices.getRevenue(
-    requestAdminRoleId,
-    requestAdminClientId
+    requestUserRoleId,
+    requestUserClientId
   )
 
   return res.status(HttpStatusCode.Ok).json({ message: REVENUE_AND_DELINQUENCY_FOUND, revenueAndDelinquencyData })
 }
 
-export default { countClients, getRevenue }
+const getMonthlyBillings = async (req: Request, res: Response): Promise<Response> => {
+  const BILLINGS_FOUND = 'Cobranças recuperadas com sucesso.'
+
+  const month = parseInt(req.query.month as string)
+  const year = parseInt(req.query.year as string)
+
+  const billingData = await adminServices.getMonthlyBillings(month, year)
+
+  return res.status(HttpStatusCode.Ok).json({ message: BILLINGS_FOUND, billingData })
+}
+
+const updateBillingStatus = async (req: Request, res: Response): Promise<Response> => {
+  const BILLING_UPDATED = 'Cobrança atualizada com sucesso.'
+  const billingStatus = req.body.status as string
+
+  await adminServices.updateBillingStatus(req.params.id, billingStatus)
+
+  return res.status(HttpStatusCode.Ok).json({ message: BILLING_UPDATED })
+}
+
+export default { countClients, getMonthlyBillings, getRevenue, updateBillingStatus }

@@ -68,6 +68,7 @@ model Client {
   financePhoneNumber String   @map("telefone_do_financeiro")
   lumpSum            Float?   @map("valor_fixo")
   unitValue          Float?   @map("valor_unitario")
+  dueDay             Int?     @map("dia_de_vencimento")
   totalSavings       Float    @default(0) @map("economia_total")
   contractUrl        String?  @map("url_do_contrato")
   isHinova           Boolean  @default(false) @map("tem_hinova")
@@ -80,10 +81,29 @@ model Client {
   status  Status   @relation(fields: [statusId], references: [id])
   members Member[]
   orders  Order[]
+  billings ClientBilling[]
   users                     User[]
 
   @@index(fantasyName)
   @@map("cliente")
+}
+
+model ClientBilling {
+  id        String    @id @default(uuid())
+  clientId  String    @map("id_cliente")
+  month     Int       @map("mes")
+  year      Int       @map("ano")
+  dueDay    Int?      @map("dia_de_vencimento")
+  amount    Float     @map("valor")
+  status    String    @default("pending")
+  paidAt    DateTime? @map("data_de_pagamento")
+  createdAt DateTime  @default(now()) @map("data_de_criacao")
+  updatedAt DateTime  @default(now()) @updatedAt @map("data_de_atualizacao")
+
+  client Client @relation(fields: [clientId], references: [id])
+
+  @@unique([clientId, month, year])
+  @@map("cobranca_cliente")
 }
 
 model Member {

@@ -23,6 +23,7 @@ const createOne = async (req: Request, res: Response): Promise<Response> => {
     financePhoneNumber: req.body.financePhoneNumber,
     lumpSum: req.body.lumpSum,
     unitValue: req.body.unitValue,
+    dueDay: req.body.dueDay,
     contractUrl: req.body.contractUrl,
     isHinova: req.body.isHinova,
     hinovaToken: req.body.hinovaToken,
@@ -120,6 +121,7 @@ const updateOne = async (req: Request, res: Response): Promise<Response> => {
     financePhoneNumber: req.body.financePhoneNumber,
     lumpSum: req.body.lumpSum,
     unitValue: req.body.unitValue,
+    dueDay: req.body.dueDay,
     contractUrl: req.body.contractUrl,
     isHinova: req.body.isHinova,
     hinovaToken: req.body.hinovaToken

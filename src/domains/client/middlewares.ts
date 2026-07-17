@@ -121,6 +121,19 @@ const validateCreateOnePayload = (req: Request, _res: Response, next: NextFuncti
       })
       .optional(),
 
+    dueDay: z
+      .number({
+        invalid_type_error: 'O campo Dia de Vencimento ("dueDay") deve ser um number.'
+      })
+      .gte(1, {
+        message: 'O campo Dia de Vencimento ("dueDay") deve ser maior ou igual a 1.'
+      })
+      .lte(31, {
+        message: 'O campo Dia de Vencimento ("dueDay") deve ser menor ou igual a 31.'
+      })
+      .nullable()
+      .optional(),
+
     contractUrl: z
       .string({
         invalid_type_error: 'O campo URL do Contrato ("contractUrl") deve ser uma string.',
@@ -172,6 +185,7 @@ const validateCreateOnePayload = (req: Request, _res: Response, next: NextFuncti
       financePhoneNumber: req.body.financePhoneNumber,
       lumpSum: req.body.lumpSum,
       unitValue: req.body.unitValue,
+      dueDay: req.body.dueDay,
       contractUrl: req.body.contractUrl,
       isHinova: req.body.isHinova,
       hinovaToken: req.body.hinovaToken,
@@ -379,6 +393,19 @@ const validateUpdateOnePayload = (req: Request, _res: Response, next: NextFuncti
       })
       .optional(),
 
+    dueDay: z
+      .number({
+        invalid_type_error: 'O campo Dia de Vencimento ("dueDay") deve ser um number.'
+      })
+      .gte(1, {
+        message: 'O campo Dia de Vencimento ("dueDay") deve ser maior ou igual a 1.'
+      })
+      .lte(31, {
+        message: 'O campo Dia de Vencimento ("dueDay") deve ser menor ou igual a 31.'
+      })
+      .nullable()
+      .optional(),
+
     contractUrl: z
       .string({
         invalid_type_error: 'O campo URL do Contrato ("contractUrl") deve ser uma string.',
@@ -418,6 +445,7 @@ const validateUpdateOnePayload = (req: Request, _res: Response, next: NextFuncti
       financePhoneNumber: req.body.financePhoneNumber,
       lumpSum: req.body.lumpSum,
       unitValue: req.body.unitValue,
+      dueDay: req.body.dueDay,
       contractUrl: req.body.contractUrl,
       isHinova: req.body.isHinova,
       hinovaToken: req.body.hinovaToken
